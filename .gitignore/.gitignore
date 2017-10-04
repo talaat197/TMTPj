@@ -6,7 +6,7 @@
 *.ko
 *.obj
 *.elf
-
+#talaat wa7d bs
 # Linker output
 *.ilk
 *.map
