@@ -22,8 +22,11 @@ public class Klydar_List {
      */
     public static void main(String[] args)  {
         // TODO code application logic here
-        Data f = new Data();
-        f.setVisible(true);
+        /*Database obj = new Database();
+        String query = ("insert into userdata (id,name, status, type, sponsor, AFF, mobile, email) VALUES(5,'talaat', 0,'committee', 'sponsor','hey', 123, 'maise_mardon@hotmail.com')");
+        obj.updata_query(query);  */
+       Data f = new Data();
+        f.setVisible(true);   
     }
     
 }

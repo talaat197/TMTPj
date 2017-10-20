@@ -7,8 +7,14 @@ package klydar_list;
 
 import com.github.sarxos.webcam.Webcam;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Label;
 import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +28,10 @@ import javax.imageio.ImageIO;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.OrientationRequested;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
@@ -31,10 +40,10 @@ import javax.swing.table.DefaultTableModel;
 
 
 /**
- *
+ 
  * @author Talaat
  */
-public class Data extends javax.swing.JFrame {
+public class Data extends javax.swing.JFrame{
     JTable Userdata;
     DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
      Database db;
@@ -67,6 +76,8 @@ public class Data extends javax.swing.JFrame {
         print_bt = new javax.swing.JButton();
         edit_bt = new javax.swing.JButton();
         Screenshot = new javax.swing.JButton();
+        filter_type = new javax.swing.JComboBox<>();
+        filter_sponsor = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Data of Users");
@@ -122,6 +133,18 @@ public class Data extends javax.swing.JFrame {
             }
         });
 
+        filter_type.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filter_typeActionPerformed(evt);
+            }
+        });
+
+        filter_sponsor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filter_sponsorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -149,6 +172,12 @@ public class Data extends javax.swing.JFrame {
                         .addGap(87, 87, 87)
                         .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(122, 122, 122)
+                .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(137, 137, 137)
+                .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,8 +194,12 @@ public class Data extends javax.swing.JFrame {
                     .addComponent(print_bt, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                     .addComponent(Screenshot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(19, 19, 19)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(filter_type)
+                    .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -194,13 +227,13 @@ public class Data extends javax.swing.JFrame {
             String data = search.getText();
             if(data.equals(""))
             {
-                ResultSet rs = db.select_query("select * from userdata");
+                ResultSet rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata");
                 Userdata = new JTable(buildTableModel(rs));
                 set_style();
             }//if search field is empty
             else
             {
-                ResultSet rs = db.select_query("select * from userdata where name LIKE '"+data+"%' or ID LIKE '"+data+"%'");
+                ResultSet rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where name LIKE '"+data+"%' or ID LIKE '"+data+"%'");
                 Userdata = new JTable(buildTableModel(rs));
                 set_style();
             }//if search not emptu
@@ -214,7 +247,7 @@ public class Data extends javax.swing.JFrame {
     private void print_btActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_print_btActionPerformed
         // TODO add your handling code here:
         try{
-            if(Userdata.getSelectedRowCount()>1)
+            /*if(Userdata.getSelectedRowCount()>1)
             {
                 JOptionPane.showMessageDialog(null,"choose only one user");
             }
@@ -226,22 +259,27 @@ public class Data extends javax.swing.JFrame {
             hide.setText(name+"\n");
             hide.append(Integer.toString(id));
             
-            MessageFormat header = new MessageFormat(" Whatever");
-            MessageFormat footer = new MessageFormat(" Page {0,number,integer}            Whatever");
-                
+            MessageFormat header = new MessageFormat(name);
+            MessageFormat footer = new MessageFormat("");
+              JTable printer_temp = new JTable();  
          PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
-         set.add(OrientationRequested.LANDSCAPE);
-         Userdata.print(JTable.PrintMode.FIT_WIDTH, header, footer, false, set, false);
+         set.add(OrientationRequested.PORTRAIT);
+         printer_temp.print(JTable.PrintMode.FIT_WIDTH, header, footer, false, set, false);
          JOptionPane.showMessageDialog(null, "\n" + "JTable was Successfully "
                 + "\n" + "Printed on your Default Printer");
+            }//only one row */
+         Directprint lt = new Directprint();
+        lt.printString("If this text gets printed, it will have worked! ;D");
         
-
-            
-            }//only one row
-        }catch(Exception e ){}
+        }catch(Exception e ){
+            JOptionPane.showMessageDialog(null, e);
+        }
         
     }//GEN-LAST:event_print_btActionPerformed
-
+    //*******************************************
+    
+    
+    //************************8
     private void edit_btActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edit_btActionPerformed
         // TODO add your handling code here:
         try{
@@ -274,12 +312,89 @@ public class Data extends javax.swing.JFrame {
             System.out.println(ex);
         }
     }//GEN-LAST:event_ScreenshotActionPerformed
+
+    private void filter_typeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter_typeActionPerformed
+       
+        filtering();
+    }//GEN-LAST:event_filter_typeActionPerformed
+    public void filtering(){ // this func filtering data according to 2 combobox sponsor and type
+         // TODO add your handling code here:
+        try 
+        {
+            String type = filter_type.getSelectedItem().toString();
+            String spon = filter_sponsor.getSelectedItem().toString();
+            ResultSet rs;
+            if(type.equals("Show all") && spon.equals("Show all"))
+            {
+                 rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata");
+                 
+            }//if search field is empty
+            else if(!type.equals("Show all") && spon.equals("Show all")){
+                 rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where type='"+type+"'");
+                 
+            }
+            else if(type.equals("Show all") && !spon.equals("Show all")){
+                 rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where sponsor='"+spon+"'");
+                 
+            }
+            else
+            {
+                rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where type='"+type+"' && sponsor ='"+spon+"'");
+                
+            }//if search not emptu
+            
+            Userdata = new JTable(buildTableModel(rs));
+                set_style();
+        }
+        catch(Exception e)
+        {
+          // JOptionPane.showMessageDialog(null,e);
+        }
+    }
+    private void filter_sponsorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter_sponsorActionPerformed
+        filtering();
+    }//GEN-LAST:event_filter_sponsorActionPerformed
     public void display_data()
     {
        
-        ResultSet rs = db.select_query("select * from userdata");
+        ResultSet rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata");
         Userdata = new JTable(buildTableModel(rs));
         set_style();
+        filter_type();
+        filter_sponsor();
+    }
+    // this func for display choices in the choice menue and 
+    public void filter_type(){
+         Database db2 = new Database();
+           try
+        {
+                ResultSet ts = db2.select_query("select DISTINCT type from userdata");
+                filter_type.addItem("Show all");
+                while(ts.next()){
+                    filter_type.addItem(ts.getString(1));
+                }
+               db2.close_db();
+        }
+            catch(Exception e){
+                    JOptionPane.showMessageDialog(null,"filter type ");
+                    }
+        
+        
+    }
+    public void filter_sponsor(){
+        Database db3 = new Database();
+        try
+        {
+                ResultSet rs = db3.select_query("select DISTINCT sponsor from userdata");
+                filter_sponsor.addItem("Show all");
+                while(rs.next()){
+                    filter_sponsor.addItem(rs.getString(1));
+                }
+                db3.close_db();
+        }
+            catch(Exception e){
+                    JOptionPane.showMessageDialog(null,"filter sponsor");
+                    }
     }
     public void set_style()
     {
@@ -366,6 +481,8 @@ public class Data extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Screenshot;
     private javax.swing.JButton edit_bt;
+    private javax.swing.JComboBox<String> filter_sponsor;
+    private javax.swing.JComboBox<String> filter_type;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -373,4 +490,6 @@ public class Data extends javax.swing.JFrame {
     private javax.swing.JButton print_bt;
     private javax.swing.JTextField search;
     // End of variables declaration//GEN-END:variables
+
+    
 }
