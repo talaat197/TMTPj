@@ -25,8 +25,15 @@ public class Klydar_List {
         /*Database obj = new Database();
         String query = ("insert into userdata (id,name, status, type, sponsor, AFF, mobile, email) VALUES(5,'talaat', 0,'committee', 'sponsor','hey', 123, 'maise_mardon@hotmail.com')");
         obj.updata_query(query);  */
-       Data f = new Data();
-        f.setVisible(true);   
+        try{
+        Data f = new Data();
+        f.setVisible(true);
+        } 
+        catch(Exception e)
+        {
+            
+        }
+       
     }
     
 }

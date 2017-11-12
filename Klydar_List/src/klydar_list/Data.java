@@ -5,13 +5,15 @@
  */
 package klydar_list;
 
-import com.github.sarxos.webcam.Webcam;
-import java.awt.Color;
+//import com.github.sarxos.webcam.Webcam;
+import java.awt.*;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -20,7 +22,12 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,15 +35,21 @@ import javax.imageio.ImageIO;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.OrientationRequested;
-import javax.swing.JComboBox;
+import javax.swing.*;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 
 /**
@@ -47,7 +60,8 @@ public class Data extends javax.swing.JFrame{
     JTable Userdata;
     DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
      Database db;
-     JTextArea hide = new JTextArea();   // text area for printing 
+     ResultSet global_data;
+     private byte  first_time = 0;
     /**
      * Creates new form Data
      */
@@ -56,8 +70,9 @@ public class Data extends javax.swing.JFrame{
         initComponents();
         
         display_data();
+        insert_buttons();
         
-    }
+    }//END constructor
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -69,30 +84,34 @@ public class Data extends javax.swing.JFrame{
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jLabel2 = new javax.swing.JLabel();
         search = new javax.swing.JTextField();
         print_bt = new javax.swing.JButton();
-        edit_bt = new javax.swing.JButton();
-        Screenshot = new javax.swing.JButton();
         filter_type = new javax.swing.JComboBox<>();
         filter_sponsor = new javax.swing.JComboBox<>();
+        jTextField1 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        Crtificate = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
+        jMenu5 = new javax.swing.JMenu();
+        Tagsettings = new javax.swing.JMenu();
+        certificatesettings = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Data of Users");
 
-        jPanel1.setBackground(new java.awt.Color(0, 0, 255));
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Users Data");
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
 
         jScrollPane1.setBackground(new java.awt.Color(51, 51, 51));
         jScrollPane1.setForeground(new java.awt.Color(102, 102, 102));
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 2, 24)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Search");
 
@@ -109,98 +128,209 @@ public class Data extends javax.swing.JFrame{
             }
         });
 
-        print_bt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        print_bt.setText("print");
+        print_bt.setBackground(new java.awt.Color(0, 153, 153));
+        print_bt.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
+        print_bt.setForeground(new java.awt.Color(255, 255, 255));
+        print_bt.setText("Print Tag");
         print_bt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 print_btActionPerformed(evt);
             }
         });
 
-        edit_bt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        edit_bt.setText("Edit");
-        edit_bt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                edit_btActionPerformed(evt);
-            }
-        });
-
-        Screenshot.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        Screenshot.setText("Screenshot");
-        Screenshot.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ScreenshotActionPerformed(evt);
-            }
-        });
-
+        filter_type.setBackground(new java.awt.Color(0, 153, 153));
+        filter_type.setFont(new java.awt.Font("Tahoma", 3, 18)); // NOI18N
+        filter_type.setForeground(new java.awt.Color(255, 255, 255));
+        filter_type.setMaximumRowCount(1000);
+        filter_type.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Type", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
         filter_type.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filter_typeActionPerformed(evt);
             }
         });
 
+        filter_sponsor.setBackground(new java.awt.Color(0, 153, 153));
+        filter_sponsor.setFont(new java.awt.Font("Tahoma", 3, 18)); // NOI18N
+        filter_sponsor.setForeground(new java.awt.Color(255, 255, 255));
+        filter_sponsor.setMaximumRowCount(1000);
+        filter_sponsor.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sponsor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
         filter_sponsor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filter_sponsorActionPerformed(evt);
             }
         });
 
+        jTextField1.setEditable(false);
+        jTextField1.setBackground(new java.awt.Color(51, 51, 51));
+        jTextField1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setText("User Data");
+        jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51), 2));
+
+        jButton1.setBackground(new java.awt.Color(0, 153, 153));
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Reset");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        Crtificate.setBackground(new java.awt.Color(0, 153, 153));
+        Crtificate.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
+        Crtificate.setForeground(new java.awt.Color(255, 255, 255));
+        Crtificate.setText("Print Certificate");
+        Crtificate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrtificateActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/Spin_1.gif"))); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Screenshot, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(314, 314, 314)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
-                        .addGap(311, 311, 311))
+                        .addGap(29, 29, 29)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 324, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(edit_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(87, 87, 87)
-                        .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Crtificate, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(122, 122, 122)
+            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(137, 137, 137)
-                .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(46, 46, 46)
+                .addComponent(jButton1)
+                .addGap(38, 38, 38)
+                .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(135, 135, 135))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(59, 59, 59)
+                .addGap(60, 60, 60)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(edit_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(print_bt, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
-                    .addComponent(Screenshot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(19, 19, 19)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(filter_type)
-                    .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(Crtificate, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(56, 56, 56))
         );
+
+        jMenuBar1.setBackground(new java.awt.Color(0, 153, 153));
+        jMenuBar1.setForeground(new java.awt.Color(255, 153, 0));
+        jMenuBar1.setToolTipText("");
+
+        jMenu1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        jMenu1.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu1.setText("Add User");
+        jMenu1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenu1MousePressed(evt);
+            }
+        });
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        jMenu2.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu2.setText("Refresh");
+        jMenu2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenu2MousePressed(evt);
+            }
+        });
+        jMenuBar1.add(jMenu2);
+
+        jMenu3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        jMenu3.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu3.setText("Screen Shoot");
+        jMenu3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jMenu3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenu3MousePressed(evt);
+            }
+        });
+        jMenuBar1.add(jMenu3);
+
+        jMenu4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        jMenu4.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu4.setText("Update");
+        jMenu4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jMenu4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenu4MousePressed(evt);
+            }
+        });
+        jMenuBar1.add(jMenu4);
+
+        jMenu5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        jMenu5.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu5.setText("Edit");
+        jMenu5.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenu5MousePressed(evt);
+            }
+        });
+        jMenuBar1.add(jMenu5);
+
+        Tagsettings.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Tagsettings.setForeground(java.awt.Color.white);
+        Tagsettings.setText("Print Tag Settings");
+        Tagsettings.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        Tagsettings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TagsettingsMousePressed(evt);
+            }
+        });
+        jMenuBar1.add(Tagsettings);
+
+        certificatesettings.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        certificatesettings.setForeground(new java.awt.Color(255, 255, 255));
+        certificatesettings.setText("print Certificate Settings");
+        certificatesettings.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        certificatesettings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                certificatesettingsMousePressed(evt);
+            }
+        });
+        jMenuBar1.add(certificatesettings);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -225,22 +355,29 @@ public class Data extends javax.swing.JFrame{
         try
         {
             String data = search.getText();
-            if(data.equals(""))
+            Userdata = new JTable(buildTableModel(global_data));
+            global_data.beforeFirst();
+            
+            set_style();
+            for(int i=0 ; i<Userdata.getRowCount(); i++)
             {
-                ResultSet rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata");
-                Userdata = new JTable(buildTableModel(rs));
-                set_style();
-            }//if search field is empty
-            else
-            {
-                ResultSet rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where name LIKE '"+data+"%' or ID LIKE '"+data+"%'");
-                Userdata = new JTable(buildTableModel(rs));
-                set_style();
-            }//if search not emptu
+                if(Userdata.getValueAt(i, 1).toString().toLowerCase().contains(data.toLowerCase()));
+                else if (Userdata.getValueAt(i, 0).toString().toLowerCase().contains(data.toLowerCase()));
+                else
+                {
+                    TableModel model = Userdata.getModel();
+                        if (model instanceof DefaultTableModel) {
+                            ((DefaultTableModel) model).removeRow(i);
+                            i--;
+                        }
+                }
+            }//end loop searching in table
+            
+            insert_buttons();
         }
         catch(Exception e)
         {
-            
+           JOptionPane.showMessageDialog(null, e);
         }
     }//GEN-LAST:event_searchKeyReleased
 
@@ -268,59 +405,96 @@ public class Data extends javax.swing.JFrame{
          JOptionPane.showMessageDialog(null, "\n" + "JTable was Successfully "
                 + "\n" + "Printed on your Default Printer");
             }//only one row */
-         Directprint lt = new Directprint();
-        lt.printString("If this text gets printed, it will have worked! ;D");
-        
-        }catch(Exception e ){
-            JOptionPane.showMessageDialog(null, e);
-        }
-        
-    }//GEN-LAST:event_print_btActionPerformed
-    //*******************************************
-    
-    
-    //************************8
-    private void edit_btActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edit_btActionPerformed
-        // TODO add your handling code here:
-        try{
-             if(Userdata.getSelectedRowCount()>1)
+            if(Userdata.getSelectedRowCount()>1 || Userdata.getSelectedRowCount()==0)
             {
                 JOptionPane.showMessageDialog(null,"choose only one user");
             }
             else
             {
             int rownum = Userdata.getSelectedRow();
-           int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
+            int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
             String name = Userdata.getValueAt(rownum, 1).toString();
-            Ubdate_data s = new Ubdate_data(name, id);
-            s.setVisible(true); 
-            dispose();
-            } //end else
-        }catch(Exception e){
-            
+            Directprint lt = new Directprint(0); // Name tag 
+            lt.barcode_generate(Integer.toString(id));
+            lt.printString("Dr "+name);
+            JOptionPane.showMessageDialog(null,"Done printing");
+            }//end else
+        }catch(Exception e ){
+            JOptionPane.showMessageDialog(null, e);
         }
-    }//GEN-LAST:event_edit_btActionPerformed
+        
+    }//GEN-LAST:event_print_btActionPerformed
+    //*******************************************
+    public void Action_cell()
+    {
+        Userdata.getDefaultEditor(String.class).addCellEditorListener(
+                new CellEditorListener() {
+                    public void editingCanceled(ChangeEvent e) {
+                        //System.out.println("editingCanceled");
+                    }
 
-    private void ScreenshotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ScreenshotActionPerformed
-        // TODO add your handling code here:
-      
-        try {
-             Webcam webcam = Webcam.getDefault();
-            webcam.open();
-            ImageIO.write(webcam.getImage(), "PNG", new File("D:\\hello-world.png"));
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-    }//GEN-LAST:event_ScreenshotActionPerformed
-
+                    public void editingStopped(ChangeEvent e) {
+                       try
+                        {
+                            System.out.println(Userdata.getSelectedColumn());
+                            if(Userdata.getSelectedRowCount()==1)
+                            {
+                                String type="";
+                                String sponsor="";
+                                String AFF="";
+                                String name="";
+                                int selected_row=Userdata.getSelectedRow();
+                                int id = Integer.parseInt(Userdata.getValueAt(selected_row,0).toString()); 
+                                if(Userdata.getSelectedColumn()==3)//type field
+                                {
+                                    type = Userdata.getValueAt(selected_row, 3).toString();
+                                    db.updata_query("update userdata set type='"+type+"' where ID='"+id+"'");
+                                     JOptionPane.showMessageDialog(null, "Done Editing");
+                                }
+                                else if (Userdata.getSelectedColumn()==4)//sponsor field
+                                {
+                                    sponsor = Userdata.getValueAt(selected_row, 4).toString();
+                                    db.updata_query("update userdata set sponsor='"+sponsor+"' where ID='"+id+"'");
+                                     JOptionPane.showMessageDialog(null, "Done Editing");
+                                }
+                                else if (Userdata.getSelectedColumn()==5)//AFF field
+                                {
+                                     AFF = Userdata.getValueAt(selected_row, 5).toString();
+                                    db.updata_query("update userdata set AFF='"+AFF+"' where ID='"+id+"'");
+                                     JOptionPane.showMessageDialog(null, "Done Editing");
+                                }
+                                else if (Userdata.getSelectedColumn()==1)//Name Field
+                                {
+                                    name = Userdata.getValueAt(selected_row, 1).toString();
+                                    db.updata_query("update userdata set Name='"+name+"' where ID='"+id+"'");
+                                     JOptionPane.showMessageDialog(null, "Done Editing");
+                                }
+                            }//if select one row
+                            else
+                            {
+                                JOptionPane.showMessageDialog(null, "Select One Customer Only");
+                            }//if select more one row
+                            }//end try
+                            catch(Exception ex)
+                            {
+                                JOptionPane.showMessageDialog(null, "Invalid Data");
+                            }//end catch
+                                    }//end function
+                    
+                        });
+        
+    }
     private void filter_typeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter_typeActionPerformed
        
         filtering();
+        
     }//GEN-LAST:event_filter_typeActionPerformed
     public void filtering(){ // this func filtering data according to 2 combobox sponsor and type
          // TODO add your handling code here:
         try 
         {
+           if(first_time < 2){first_time++;}
+           else{
             String type = filter_type.getSelectedItem().toString();
             String spon = filter_sponsor.getSelectedItem().toString();
             ResultSet rs;
@@ -331,8 +505,7 @@ public class Data extends javax.swing.JFrame{
             }//if search field is empty
             else if(!type.equals("Show all") && spon.equals("Show all")){
                  rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where type='"+type+"'");
-                 
-            }
+            }//end else if
             else if(type.equals("Show all") && !spon.equals("Show all")){
                  rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where sponsor='"+spon+"'");
                  
@@ -345,70 +518,249 @@ public class Data extends javax.swing.JFrame{
             
             Userdata = new JTable(buildTableModel(rs));
                 set_style();
+                insert_buttons();
         }
+           }//else first time
         catch(Exception e)
         {
           // JOptionPane.showMessageDialog(null,e);
         }
+            
     }
     private void filter_sponsorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter_sponsorActionPerformed
         filtering();
     }//GEN-LAST:event_filter_sponsorActionPerformed
-    public void display_data()
-    {
-       
-        ResultSet rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata");
-        Userdata = new JTable(buildTableModel(rs));
-        set_style();
-        filter_type();
-        filter_sponsor();
-    }
-    // this func for display choices in the choice menue and 
-    public void filter_type(){
-         Database db2 = new Database();
-           try
-        {
-                ResultSet ts = db2.select_query("select DISTINCT type from userdata");
-                filter_type.addItem("Show all");
-                while(ts.next()){
-                    filter_type.addItem(ts.getString(1));
-                }
-               db2.close_db();
-        }
-            catch(Exception e){
-                    JOptionPane.showMessageDialog(null,"filter type ");
-                    }
-        
-        
-    }
-    public void filter_sponsor(){
-        Database db3 = new Database();
+
+    private void jMenu1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MousePressed
+        // TODO add your handling code here:
         try
         {
-                ResultSet rs = db3.select_query("select DISTINCT sponsor from userdata");
-                filter_sponsor.addItem("Show all");
-                while(rs.next()){
-                    filter_sponsor.addItem(rs.getString(1));
+            AddUser s = new AddUser(this);
+            s.setVisible(true);
+            setVisible(false);
+        }
+        catch(Exception e)
+        {
+            
+        }
+    }//GEN-LAST:event_jMenu1MousePressed
+
+    private void jMenu2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MousePressed
+        // TODO add your handling code here:
+         filter_sponsor.removeAllItems();
+        filter_type.removeAllItems();
+        display_data();
+        insert_buttons();
+    }//GEN-LAST:event_jMenu2MousePressed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        filter_sponsor.setSelectedIndex(0);
+        filter_type.setSelectedIndex(0);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenu3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MousePressed
+        // TODO add your handling code here:
+         /*try {
+             Webcam webcam = Webcam.getDefault();
+            webcam.open();
+            ImageIO.write(webcam.getImage(), "PNG", new File("D:\\hello-world.png"));
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }*/
+    }//GEN-LAST:event_jMenu3MousePressed
+
+    private void jMenu4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu4MousePressed
+        // TODO add your handling code here:
+         try
+        {
+            if(Userdata.getSelectedRowCount()==1)
+            {
+                String type="";
+                String sponsor="";
+                String AFF="";
+                int selected_row=Userdata.getSelectedRow();
+                int id = Integer.parseInt(Userdata.getValueAt(selected_row,0).toString());       
+                String name = Userdata.getValueAt(selected_row, 1).toString();
+                if(Userdata.getValueAt(selected_row, 3).toString().equals(""));
+                else
+                    type = Userdata.getValueAt(selected_row, 3).toString();
+                if(Userdata.getValueAt(selected_row, 4).toString().equals(""));
+                else
+                    sponsor = Userdata.getValueAt(selected_row, 4).toString();
+                if(Userdata.getValueAt(selected_row, 5).toString().equals(""));
+                else
+                    AFF = Userdata.getValueAt(selected_row, 5).toString();
+                db.updata_query("update userdata set Name='"+name+"',type='"+type+"',sponsor='"+sponsor+"',AFF='"+AFF+"' where ID='"+id+"'");
+                JOptionPane.showMessageDialog(null, "Done Editing");
+            }//if select one row
+            else
+            {
+                JOptionPane.showMessageDialog(null, "Select One Customer Only");
+            }//if select more one row
+        }//end try
+        catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(null, "Invalid Data");
+        }//end catch
+    }//GEN-LAST:event_jMenu4MousePressed
+
+    private void jMenu5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MousePressed
+        // TODO add your handling code here:
+        try{
+             if(Userdata.getSelectedRowCount()>1)
+            {
+                JOptionPane.showMessageDialog(null,"choose only one user");
+            }
+            else
+            {
+            int rownum = Userdata.getSelectedRow();
+           int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
+            String name = Userdata.getValueAt(rownum, 1).toString();
+            Ubdate_data s = new Ubdate_data(name, id ,this);
+            s.setVisible(true); 
+            setVisible(false);
+            } //end else
+        }catch(Exception e){
+            
+        }
+    }//GEN-LAST:event_jMenu5MousePressed
+
+    private void CrtificateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrtificateActionPerformed
+        // TODO add your handling code here:
+        try{
+          if(Userdata.getSelectedRowCount()>1 || Userdata.getSelectedRowCount()==0)
+            {
+                JOptionPane.showMessageDialog(null,"choose only one user");
+            }
+            else
+            {
+            int rownum = Userdata.getSelectedRow();
+           // int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
+            String name = Userdata.getValueAt(rownum, 1).toString();
+            Directprint lt = new Directprint(1); // Name tag 
+            lt.printString("Dr "+name);
+            }//end else
+          JOptionPane.showMessageDialog(null,"Done printing");
+        }catch(Exception e ){
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_CrtificateActionPerformed
+
+    private void TagsettingsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TagsettingsMousePressed
+        // TODO add your handling code here:
+        TagSetting obj = new TagSetting();
+        obj.setVisible(true);
+    }//GEN-LAST:event_TagsettingsMousePressed
+
+    private void certificatesettingsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_certificatesettingsMousePressed
+        // TODO add your handling code here:
+        CertSetting obj = new CertSetting();
+        obj.setVisible(true);
+    }//GEN-LAST:event_certificatesettingsMousePressed
+    public void display_data()
+    {    
+        try
+        {
+            ResultSet rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata");
+            Userdata = new JTable(buildTableModel(rs));
+            rs.beforeFirst();
+            Set type=remove_duplicate(rs,4);
+            set_style();
+            filter_type(type);
+            rs.beforeFirst();
+            type.clear();
+            type = remove_duplicate(rs, 5);
+            filter_sponsor(type);
+            rs.beforeFirst();
+            try
+            {
+            Statement new_ste = db.cn.createStatement();
+            global_data=new_ste.executeQuery("select ID,name,status,type,sponsor,AFF from userdata");
+            }
+            catch(Exception e)
+            {
+
+            }
+        }//end try
+        catch(Exception e)
+        {
+            
+        }//end catch
+    }
+    // this func for display choices in the choice menue and 
+     public Set remove_duplicate(ResultSet data,int colm){
+        Set<String> set = new HashSet<>(); // set because it prevents duplicate data
+        try {
+            while(data.next()){
+                set.add(data.getString(colm));
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        return set;
+    }
+    // this func for display choices in the choice menue and 
+    public void filter_type(Set data){
+     
+           try
+        {
+                filter_type.addItem("Show all");
+                 Enumeration e = Collections.enumeration(data);
+                 e.nextElement();
+                while(e.hasMoreElements()){
+                    filter_type.addItem((String) e.nextElement());
                 }
-                db3.close_db();
+               
         }
             catch(Exception e){
-                    JOptionPane.showMessageDialog(null,"filter sponsor");
+                    JOptionPane.showMessageDialog(null,"filter type "+e);
+                    }
+        
+        
+    }
+    public void filter_sponsor(Set data){
+        try
+        {
+                filter_sponsor.addItem("Show all");
+                 Enumeration e = Collections.enumeration(data);
+                 e.nextElement();
+                while(e.hasMoreElements()){
+                    
+                    filter_sponsor.addItem((String) e.nextElement());
+                }
+               
+        }
+            catch(Exception e){
+                    JOptionPane.showMessageDialog(null,"filter type "+e);
                     }
     }
+    
     public void set_style()
     {
         jScrollPane1.setViewportView(Userdata);
         rightRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        for(int i=0 ; i<6 ; i++)
+        Userdata.getColumnModel().getColumn(0).setMinWidth(60);
+        Userdata.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
+        Userdata.getColumnModel().getColumn(1).setMinWidth(220);
+        Userdata.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+        for(int i=2 ; i<6 ; i++)
         {
-            Userdata.getColumnModel().getColumn(i).setMinWidth(120);
+            Userdata.getColumnModel().getColumn(i).setMinWidth(130);
              Userdata.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
         }
-        Userdata.setFont((new Font("Arial Unicode MS", 0, 25)));
+        Userdata.setFont((new Font("Arial Unicode MS", 0, 18)));
         Userdata.setRowHeight(40);
-        Userdata.getTableHeader().setFont(new Font("SansSerif", Font.ITALIC, 30));
-        jScrollPane1.getViewport().setBackground(Color.BLUE);
+        Userdata.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 25));
+        JTableHeader header = Userdata.getTableHeader();
+        Color black_orange = new Color(255,153,0);
+        Color ztone = new Color(0,153,153);
+        header.setBackground(black_orange);
+        header.setForeground(Color.BLACK);
+        Userdata.setSelectionBackground(ztone);
+        Userdata.setSelectionForeground(Color.WHITE);
+        //Userdata.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);    
+        Action_cell();
     }
     public static DefaultTableModel buildTableModel(ResultSet rs)
        {
@@ -446,50 +798,139 @@ public class Data extends javax.swing.JFrame{
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Data.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Data.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Data.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Data.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Data().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Screenshot;
-    private javax.swing.JButton edit_bt;
+    private javax.swing.JButton Crtificate;
+    private javax.swing.JMenu Tagsettings;
+    private javax.swing.JMenu certificatesettings;
     private javax.swing.JComboBox<String> filter_sponsor;
     private javax.swing.JComboBox<String> filter_type;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton print_bt;
     private javax.swing.JTextField search;
     // End of variables declaration//GEN-END:variables
+//***************************************************** bar code and status button author: sheko 
+    public void insert_buttons()
+	{
+            //add button in status
+        Userdata.getColumn("status").setCellRenderer(new ButtonRenderer());
+        Userdata.getColumn("status").setCellEditor(
+        new ButtonEditor(new JCheckBox(),1));
+         
+	}//end function insert buttons
+        /*********************************************************************/
+       class ButtonRenderer extends JButton implements TableCellRenderer {
+
+  public ButtonRenderer() {
+    setOpaque(true);
+  }
+
+  public Component getTableCellRendererComponent(JTable table, Object value,
+      boolean isSelected, boolean hasFocus, int row, int column) {
+    if (isSelected) {
+      setForeground(table.getSelectionForeground());
+      setBackground(table.getSelectionBackground());
+        
+    } else {
+      setForeground(table.getForeground());
+      setBackground(UIManager.getColor("Button.background"));
+    }
+    setText((value == null) ? "" : value.toString());
+    return this;
+  }
+}
+
+/**
+ * @version 1.0 11/09/98
+ */
+
+class ButtonEditor extends DefaultCellEditor {
+  protected JButton button;
+
+  private String label;
+
+  private boolean isPushed;
+
+  public ButtonEditor(JCheckBox checkBox , int colum_specified) {
+    super(checkBox);
+    button = new JButton();
+    if(colum_specified==1)
+    {
+        button.setName("1");//means status
+    }
+    else if (colum_specified==2)
+    {
+       
+    }
+    button.setOpaque(true);
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {  
+          fireEditingStopped();
+      }
+    });
+  }
+
+  public Component getTableCellEditorComponent(JTable table, Object value,
+      boolean isSelected, int row, int column) {
+    if (isSelected) {
+      button.setForeground(table.getSelectionForeground());
+      button.setBackground(table.getSelectionBackground());
+    } else {
+      button.setForeground(table.getForeground());
+      button.setBackground(table.getBackground());
+    }
+    label = (value == null) ? "" : value.toString();
+    button.setText(label);
+    isPushed = true;
+    
+    return button;
+  }
+
+  public Object getCellEditorValue() {
+    if (isPushed) {
+      // 
+      //
+     int selected_row = Userdata.getSelectedRow();
+     int id_cust=Integer.parseInt(Userdata.getValueAt(Userdata.getSelectedRow(),0).toString());
+     String status_value=Userdata.getValueAt(Userdata.getSelectedRow(),2).toString();
+        if(status_value.equals("ON"))
+        {
+            db.updata_query("update userdata set status='OFF' where ID='"+id_cust+"'");
+            button.setText("OFF");
+        }
+        else
+        {
+            db.updata_query("update userdata set status='ON' where ID='"+id_cust+"'");
+            button.setText("ON"); 
+        }
+    }
+    isPushed = false;
+    label=button.getText();
+    return new String(label);
+  }
+
+  public boolean stopCellEditing() {
+    isPushed = false;
+    
+    return super.stopCellEditing();
+  }
+
+  protected void fireEditingStopped() {
+    super.fireEditingStopped();
+  }
+}// end class button editor
 
     
-}
+} // end of data class
