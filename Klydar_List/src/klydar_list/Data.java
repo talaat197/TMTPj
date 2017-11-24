@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.Collections;
@@ -66,11 +67,17 @@ public class Data extends javax.swing.JFrame{
      * Creates new form Data
      */
     public Data() {
+        try{
+            
          db = new Database();
         initComponents();
-        
         display_data();
+        set_style();
         insert_buttons();
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
         
     }//END constructor
 
@@ -94,11 +101,13 @@ public class Data extends javax.swing.JFrame{
         jButton1 = new javax.swing.JButton();
         Crtificate = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        print_cert = new javax.swing.JTextField();
+        Print_c = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
+        Switch = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         Tagsettings = new javax.swing.JMenu();
         certificatesettings = new javax.swing.JMenu();
@@ -106,7 +115,7 @@ public class Data extends javax.swing.JFrame{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Data of Users");
 
-        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel1.setBackground(new java.awt.Color(51, 51, 0));
 
         jScrollPane1.setBackground(new java.awt.Color(51, 51, 51));
         jScrollPane1.setForeground(new java.awt.Color(102, 102, 102));
@@ -153,6 +162,7 @@ public class Data extends javax.swing.JFrame{
         filter_sponsor.setFont(new java.awt.Font("Tahoma", 3, 18)); // NOI18N
         filter_sponsor.setForeground(new java.awt.Color(255, 255, 255));
         filter_sponsor.setMaximumRowCount(1000);
+        filter_sponsor.setAutoscrolls(true);
         filter_sponsor.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sponsor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
         filter_sponsor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,7 +171,7 @@ public class Data extends javax.swing.JFrame{
         });
 
         jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(51, 51, 51));
+        jTextField1.setBackground(new java.awt.Color(51, 51, 0));
         jTextField1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -191,13 +201,51 @@ public class Data extends javax.swing.JFrame{
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/Spin_1.gif"))); // NOI18N
 
+        print_cert.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        print_cert.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        print_cert.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                print_certMouseReleased(evt);
+            }
+        });
+        print_cert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                print_certActionPerformed(evt);
+            }
+        });
+        print_cert.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                print_certKeyReleased(evt);
+            }
+        });
+
+        Print_c.setBackground(new java.awt.Color(255, 158, 0));
+        Print_c.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        Print_c.setForeground(new java.awt.Color(255, 185, 0));
+        Print_c.setText("Print Certificate");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(46, 46, 46)
+                        .addComponent(jButton1)
+                        .addGap(38, 38, 38)
+                        .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(135, 135, 135))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(Print_c, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(print_cert, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(314, 314, 314))))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(29, 29, 29)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1)
@@ -206,30 +254,29 @@ public class Data extends javax.swing.JFrame{
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 324, Short.MAX_VALUE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(28, 28, 28)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(Crtificate, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34)
-                        .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jTextField1)))
                 .addContainerGap())
-            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
-                .addComponent(jButton1)
-                .addGap(38, 38, 38)
-                .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(135, 135, 135))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(60, 60, 60)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(print_cert, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(Print_c, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                        .addGap(6, 6, 6)))
+                .addGap(38, 38, 38)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -286,16 +333,20 @@ public class Data extends javax.swing.JFrame{
         });
         jMenuBar1.add(jMenu3);
 
-        jMenu4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
-        jMenu4.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu4.setText("Update");
-        jMenu4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jMenu4.addMouseListener(new java.awt.event.MouseAdapter() {
+        Switch.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
+        Switch.setForeground(new java.awt.Color(255, 255, 255));
+        Switch.setText("OFFLINE");
+        Switch.setActionCommand("OFFLINE");
+        Switch.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        Switch.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jMenu4MousePressed(evt);
+                SwitchMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                SwitchMouseReleased(evt);
             }
         });
-        jMenuBar1.add(jMenu4);
+        jMenuBar1.add(Switch);
 
         jMenu5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         jMenu5.setForeground(new java.awt.Color(255, 255, 255));
@@ -361,8 +412,9 @@ public class Data extends javax.swing.JFrame{
             set_style();
             for(int i=0 ; i<Userdata.getRowCount(); i++)
             {
-                if(Userdata.getValueAt(i, 1).toString().toLowerCase().contains(data.toLowerCase()));
+                if(Userdata.getValueAt(i,1).toString().toLowerCase().contains(data.toLowerCase()));
                 else if (Userdata.getValueAt(i, 0).toString().toLowerCase().contains(data.toLowerCase()));
+                else if(Userdata.getValueAt(i,5).toString().toLowerCase().contains(data.toLowerCase()));
                 else
                 {
                     TableModel model = Userdata.getModel();
@@ -377,37 +429,23 @@ public class Data extends javax.swing.JFrame{
         }
         catch(Exception e)
         {
-           JOptionPane.showMessageDialog(null, e);
+            try {
+               Statement new_ste = db.cn.createStatement();
+                global_data=new_ste.executeQuery(DatabaseConstants.all_data);
+                
+                searchKeyReleased(evt);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, e+" \nSearch Table");
+            }
         }
     }//GEN-LAST:event_searchKeyReleased
 
     private void print_btActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_print_btActionPerformed
         // TODO add your handling code here:
         try{
-            /*if(Userdata.getSelectedRowCount()>1)
-            {
-                JOptionPane.showMessageDialog(null,"choose only one user");
-            }
-            else
-            {
-            int rownum = Userdata.getSelectedRow();
-            int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
-            String name = Userdata.getValueAt(rownum, 1).toString();
-            hide.setText(name+"\n");
-            hide.append(Integer.toString(id));
-            
-            MessageFormat header = new MessageFormat(name);
-            MessageFormat footer = new MessageFormat("");
-              JTable printer_temp = new JTable();  
-         PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
-         set.add(OrientationRequested.PORTRAIT);
-         printer_temp.print(JTable.PrintMode.FIT_WIDTH, header, footer, false, set, false);
-         JOptionPane.showMessageDialog(null, "\n" + "JTable was Successfully "
-                + "\n" + "Printed on your Default Printer");
-            }//only one row */
             if(Userdata.getSelectedRowCount()>1 || Userdata.getSelectedRowCount()==0)
             {
-                JOptionPane.showMessageDialog(null,"choose only one user");
+                JOptionPane.showMessageDialog(null,"Choose only one user");
             }
             else
             {
@@ -416,8 +454,8 @@ public class Data extends javax.swing.JFrame{
             String name = Userdata.getValueAt(rownum, 1).toString();
             Directprint lt = new Directprint(0); // Name tag 
             lt.barcode_generate(Integer.toString(id));
-            lt.printString("Dr "+name);
-            JOptionPane.showMessageDialog(null,"Done printing");
+            lt.printString(name);
+            
             }//end else
         }catch(Exception e ){
             JOptionPane.showMessageDialog(null, e);
@@ -436,7 +474,6 @@ public class Data extends javax.swing.JFrame{
                     public void editingStopped(ChangeEvent e) {
                        try
                         {
-                            System.out.println(Userdata.getSelectedColumn());
                             if(Userdata.getSelectedRowCount()==1)
                             {
                                 String type="";
@@ -448,26 +485,37 @@ public class Data extends javax.swing.JFrame{
                                 if(Userdata.getSelectedColumn()==3)//type field
                                 {
                                     type = Userdata.getValueAt(selected_row, 3).toString();
-                                    db.updata_query("update userdata set type='"+type+"' where ID='"+id+"'");
-                                     JOptionPane.showMessageDialog(null, "Done Editing");
+                                    db.updata_query(DatabaseConstants.Update_table("lists","type",type,id));
                                 }
                                 else if (Userdata.getSelectedColumn()==4)//sponsor field
                                 {
                                     sponsor = Userdata.getValueAt(selected_row, 4).toString();
-                                    db.updata_query("update userdata set sponsor='"+sponsor+"' where ID='"+id+"'");
-                                     JOptionPane.showMessageDialog(null, "Done Editing");
+                                    db.updata_query(DatabaseConstants.Update_table("lists","sponsor",sponsor,id));
                                 }
                                 else if (Userdata.getSelectedColumn()==5)//AFF field
                                 {
                                      AFF = Userdata.getValueAt(selected_row, 5).toString();
-                                    db.updata_query("update userdata set AFF='"+AFF+"' where ID='"+id+"'");
-                                     JOptionPane.showMessageDialog(null, "Done Editing");
+                                    db.updata_query(DatabaseConstants.Update_table("lists","mobile",AFF,id));
+                                }
+                                else if (Userdata.getSelectedColumn()==6)//AFF field
+                                {
+                                     AFF = Userdata.getValueAt(selected_row, 6).toString();
+                                    db.updata_query(DatabaseConstants.Update_table("lists","Profession",AFF,id));
+                                }
+                                else if (Userdata.getSelectedColumn()==7)//Name Field
+                                {
+                                    name = Userdata.getValueAt(selected_row,7).toString();
+                                    db.updata_query(DatabaseConstants.Update_table("lists","Institution",name,id));
+                                }
+                                else if (Userdata.getSelectedColumn()==8)//Name Field
+                                {
+                                    name = Userdata.getValueAt(selected_row,8).toString();
+                                    db.updata_query(DatabaseConstants.Update_table("lists","country",name,id));
                                 }
                                 else if (Userdata.getSelectedColumn()==1)//Name Field
                                 {
                                     name = Userdata.getValueAt(selected_row, 1).toString();
-                                    db.updata_query("update userdata set Name='"+name+"' where ID='"+id+"'");
-                                     JOptionPane.showMessageDialog(null, "Done Editing");
+                                    db.updata_query(DatabaseConstants.Update_table("lists","name",name,id));
                                 }
                             }//if select one row
                             else
@@ -500,19 +548,19 @@ public class Data extends javax.swing.JFrame{
             ResultSet rs;
             if(type.equals("Show all") && spon.equals("Show all"))
             {
-                 rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata");
+                 rs = db.select_query(DatabaseConstants.all_data);
                  
             }//if search field is empty
             else if(!type.equals("Show all") && spon.equals("Show all")){
-                 rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where type='"+type+"'");
+                 rs = db.select_query(DatabaseConstants.Selectall_ByValue("type", type));
             }//end else if
             else if(type.equals("Show all") && !spon.equals("Show all")){
-                 rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where sponsor='"+spon+"'");
+                 rs = db.select_query(DatabaseConstants.Selectall_ByValue("sponsor",spon));
                  
             }
             else
             {
-                rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata where type='"+type+"' && sponsor ='"+spon+"'");
+                rs = db.select_query(DatabaseConstants.Selectall_By2value("type","sponsor",type,spon));
                 
             }//if search not emptu
             
@@ -537,7 +585,6 @@ public class Data extends javax.swing.JFrame{
         {
             AddUser s = new AddUser(this);
             s.setVisible(true);
-            setVisible(false);
         }
         catch(Exception e)
         {
@@ -570,44 +617,21 @@ public class Data extends javax.swing.JFrame{
         }*/
     }//GEN-LAST:event_jMenu3MousePressed
 
-    private void jMenu4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu4MousePressed
+    private void SwitchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SwitchMousePressed
         // TODO add your handling code here:
-         try
-        {
-            if(Userdata.getSelectedRowCount()==1)
-            {
-                String type="";
-                String sponsor="";
-                String AFF="";
-                int selected_row=Userdata.getSelectedRow();
-                int id = Integer.parseInt(Userdata.getValueAt(selected_row,0).toString());       
-                String name = Userdata.getValueAt(selected_row, 1).toString();
-                if(Userdata.getValueAt(selected_row, 3).toString().equals(""));
-                else
-                    type = Userdata.getValueAt(selected_row, 3).toString();
-                if(Userdata.getValueAt(selected_row, 4).toString().equals(""));
-                else
-                    sponsor = Userdata.getValueAt(selected_row, 4).toString();
-                if(Userdata.getValueAt(selected_row, 5).toString().equals(""));
-                else
-                    AFF = Userdata.getValueAt(selected_row, 5).toString();
-                db.updata_query("update userdata set Name='"+name+"',type='"+type+"',sponsor='"+sponsor+"',AFF='"+AFF+"' where ID='"+id+"'");
-                JOptionPane.showMessageDialog(null, "Done Editing");
-            }//if select one row
-            else
-            {
-                JOptionPane.showMessageDialog(null, "Select One Customer Only");
-            }//if select more one row
-        }//end try
-        catch(Exception ex)
-        {
-            JOptionPane.showMessageDialog(null, "Invalid Data");
-        }//end catch
-    }//GEN-LAST:event_jMenu4MousePressed
+        
+        db.switch_to_local();
+        filter_sponsor.removeAllItems();
+        filter_type.removeAllItems();
+        display_data();
+        insert_buttons();
+        
+    }//GEN-LAST:event_SwitchMousePressed
 
     private void jMenu5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MousePressed
         // TODO add your handling code here:
         try{
+            /*
              if(Userdata.getSelectedRowCount()>1)
             {
                 JOptionPane.showMessageDialog(null,"choose only one user");
@@ -620,7 +644,8 @@ public class Data extends javax.swing.JFrame{
             Ubdate_data s = new Ubdate_data(name, id ,this);
             s.setVisible(true); 
             setVisible(false);
-            } //end else
+            } //end else*/
+            JOptionPane.showMessageDialog(null,"Edit from tables");
         }catch(Exception e){
             
         }
@@ -639,9 +664,9 @@ public class Data extends javax.swing.JFrame{
            // int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
             String name = Userdata.getValueAt(rownum, 1).toString();
             Directprint lt = new Directprint(1); // Name tag 
-            lt.printString("Dr "+name);
+            lt.printString(name);
             }//end else
-          JOptionPane.showMessageDialog(null,"Done printing");
+          
         }catch(Exception e ){
             JOptionPane.showMessageDialog(null, e);
         }
@@ -658,30 +683,84 @@ public class Data extends javax.swing.JFrame{
         CertSetting obj = new CertSetting();
         obj.setVisible(true);
     }//GEN-LAST:event_certificatesettingsMousePressed
+
+    private void SwitchMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SwitchMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SwitchMouseReleased
+
+    private void print_certActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_print_certActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_print_certActionPerformed
+
+    private void print_certMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_print_certMouseReleased
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_print_certMouseReleased
+
+    private void print_certKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_print_certKeyReleased
+        // TODO add your handling code here:
+        
+        try{
+        String name ="";
+        String id = print_cert.getText();
+        if(id.length()<4){
+            
+        }
+        else{
+         
+        String query = DatabaseConstants.select_name+id+"'";
+        ResultSet rs = db.select_query(query);
+        if(rs.next()){
+            name = rs.getString("name");
+        }
+        StringBuilder myName = new StringBuilder(name);
+        for(int i=0 ; i<name.length() ; i++)
+        {
+            if(i==0)
+            {
+                myName.setCharAt(i, Character.toUpperCase(name.charAt(i)));
+            }
+            else if (name.charAt(i)==' ')
+            {
+                for(int k=i ; k<name.length() ; k++)
+                {
+                    if(name.charAt(k)!=' ')
+                    {
+                        myName.setCharAt(k, Character.toUpperCase(name.charAt(k)));
+                        k=name.length();
+                    }
+                }
+            }
+        }
+        name = myName.toString();
+        Directprint lt = new Directprint(1); // Name tag 
+        lt.printString(name);
+        print_cert.setText("");
+        print_cert.requestFocus();
+        
+            }
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_print_certKeyReleased
     public void display_data()
     {    
         try
         {
-            ResultSet rs = db.select_query("select ID,name,status,type,sponsor,AFF from userdata");
+            ResultSet rs = db.select_query(DatabaseConstants.all_data);
             Userdata = new JTable(buildTableModel(rs));
             rs.beforeFirst();
-            Set type=remove_duplicate(rs,4);
+            Set type=remove_duplicate(rs,"type");
             set_style();
             filter_type(type);
             rs.beforeFirst();
             type.clear();
-            type = remove_duplicate(rs, 5);
+            type = remove_duplicate(rs,"sponsor");
             filter_sponsor(type);
             rs.beforeFirst();
-            try
-            {
             Statement new_ste = db.cn.createStatement();
-            global_data=new_ste.executeQuery("select ID,name,status,type,sponsor,AFF from userdata");
-            }
-            catch(Exception e)
-            {
-
-            }
+            global_data=new_ste.executeQuery(DatabaseConstants.all_data);
         }//end try
         catch(Exception e)
         {
@@ -689,7 +768,7 @@ public class Data extends javax.swing.JFrame{
         }//end catch
     }
     // this func for display choices in the choice menue and 
-     public Set remove_duplicate(ResultSet data,int colm){
+     public Set remove_duplicate(ResultSet data,String colm){
         Set<String> set = new HashSet<>(); // set because it prevents duplicate data
         try {
             while(data.next()){
@@ -710,23 +789,20 @@ public class Data extends javax.swing.JFrame{
                  e.nextElement();
                 while(e.hasMoreElements()){
                     filter_type.addItem((String) e.nextElement());
-                }
-               
+                }               
         }
             catch(Exception e){
                     JOptionPane.showMessageDialog(null,"filter type "+e);
                     }
-        
-        
     }
     public void filter_sponsor(Set data){
         try
         {
+               
                 filter_sponsor.addItem("Show all");
                  Enumeration e = Collections.enumeration(data);
                  e.nextElement();
                 while(e.hasMoreElements()){
-                    
                     filter_sponsor.addItem((String) e.nextElement());
                 }
                
@@ -742,24 +818,34 @@ public class Data extends javax.swing.JFrame{
         rightRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         Userdata.getColumnModel().getColumn(0).setMinWidth(60);
         Userdata.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
-        Userdata.getColumnModel().getColumn(1).setMinWidth(220);
+        Userdata.getColumnModel().getColumn(1).setMinWidth(400);
         Userdata.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-        for(int i=2 ; i<6 ; i++)
+        Userdata.getColumnModel().getColumn(2).setMinWidth(140);
+        Userdata.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+        for(int i=3 ; i<9 ; i++)
         {
-            Userdata.getColumnModel().getColumn(i).setMinWidth(130);
+            Userdata.getColumnModel().getColumn(i).setMinWidth(220);
              Userdata.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
         }
         Userdata.setFont((new Font("Arial Unicode MS", 0, 18)));
         Userdata.setRowHeight(40);
         Userdata.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 25));
         JTableHeader header = Userdata.getTableHeader();
-        Color black_orange = new Color(255,153,0);
+        Color black_orange = new Color(255,185,0);
         Color ztone = new Color(0,153,153);
         header.setBackground(black_orange);
         header.setForeground(Color.BLACK);
-        Userdata.setSelectionBackground(ztone);
-        Userdata.setSelectionForeground(Color.WHITE);
-        //Userdata.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);    
+        Userdata.setSelectionBackground(black_orange);
+        Userdata.setSelectionForeground(Color.BLACK);
+        Userdata.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        for(int i=0 ; i<Userdata.getRowCount() ; i++)
+        {
+            String status_value = Userdata.getValueAt(i, 2).toString();
+            if(status_value.equals("0"))
+                Userdata.setValueAt("OFF", i, 2);
+            else
+                Userdata.setValueAt("ON", i, 2);
+        }
         Action_cell();
     }
     public static DefaultTableModel buildTableModel(ResultSet rs)
@@ -802,6 +888,8 @@ public class Data extends javax.swing.JFrame{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Crtificate;
+    private javax.swing.JLabel Print_c;
+    private javax.swing.JMenu Switch;
     private javax.swing.JMenu Tagsettings;
     private javax.swing.JMenu certificatesettings;
     private javax.swing.JComboBox<String> filter_sponsor;
@@ -812,21 +900,21 @@ public class Data extends javax.swing.JFrame{
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JButton print_bt;
+    private javax.swing.JTextField print_cert;
     private javax.swing.JTextField search;
     // End of variables declaration//GEN-END:variables
 //***************************************************** bar code and status button author: sheko 
     public void insert_buttons()
 	{
             //add button in status
-        Userdata.getColumn("status").setCellRenderer(new ButtonRenderer());
-        Userdata.getColumn("status").setCellEditor(
+        Userdata.getColumn("attendees").setCellRenderer(new ButtonRenderer());
+        Userdata.getColumn("attendees").setCellEditor(
         new ButtonEditor(new JCheckBox(),1));
          
 	}//end function insert buttons
@@ -843,7 +931,7 @@ public class Data extends javax.swing.JFrame{
       setForeground(table.getSelectionForeground());
       setBackground(table.getSelectionBackground());
         
-    } else {
+    }else {
       setForeground(table.getForeground());
       setBackground(UIManager.getColor("Button.background"));
     }
@@ -905,15 +993,15 @@ class ButtonEditor extends DefaultCellEditor {
      int selected_row = Userdata.getSelectedRow();
      int id_cust=Integer.parseInt(Userdata.getValueAt(Userdata.getSelectedRow(),0).toString());
      String status_value=Userdata.getValueAt(Userdata.getSelectedRow(),2).toString();
-        if(status_value.equals("ON"))
+        if(status_value.equals("OFF"))
         {
-            db.updata_query("update userdata set status='OFF' where ID='"+id_cust+"'");
-            button.setText("OFF");
+            db.updata_query(DatabaseConstants.set_attend+id_cust+"'");
+            button.setText("ON");
         }
         else
         {
-            db.updata_query("update userdata set status='ON' where ID='"+id_cust+"'");
-            button.setText("ON"); 
+            db.updata_query(DatabaseConstants.clear_attend+id_cust+"'");
+            button.setText("OFF"); 
         }
     }
     isPushed = false;

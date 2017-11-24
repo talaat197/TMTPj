@@ -20,6 +20,11 @@ public class TagSetting extends javax.swing.JFrame {
         initComponents();
         format.add("LANDSCAPE");
         format.add("PORTARATE");
+        format.select("PORTARATE");
+        NX.setText(Integer.toString(Directprint.Nname_coordinate[0]) );
+        NY.setText(Integer.toString(Directprint.Nname_coordinate[1]) );
+        TX.setText(Integer.toString(Directprint.barcode_coordinate[0]) );
+        TY.setText(Integer.toString(Directprint.barcode_coordinate[1]) );
         
     }
 

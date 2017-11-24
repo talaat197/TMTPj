@@ -27,28 +27,27 @@ public class Database {
     static boolean global_flag = false;
     Connection cn;
     Statement st;
-    HttpURLConnection con;
-    URL url;
+    //HttpURLConnection con;
+    //URL url;
     DatabaseMetaData dm;
     public Database() 
     {
         try
         {
-        url = new URL("http://www.google.com");
-        Class.forName("com.mysql.jdbc.Driver");
-         cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_emb?zeroDateTimeBehavior=convertToNull","klydar_talaat","&?f2~PPhXwqd");
-         iscloud = true;
-         st = cn.createStatement();
+         Class.forName("com.mysql.jdbc.Driver");
+         this.cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd");
+         iscloud=true;
         }
         catch(Exception e)
         {try{
-       cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_emb?zeroDateTimeBehavior=convertToNull","root","");
+       cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","root","");
+       
        iscloud=false;
        st=cn.createStatement();
         }
         catch(Exception ex){
-            JOptionPane.showMessageDialog(null, "Problem with local database");
-        }
+            JOptionPane.showMessageDialog(null,"Internet conncetion problem");
+            }
         }
     }//end connection
     public ResultSet select_query(String query) 
@@ -56,41 +55,49 @@ public class Database {
         ResultSet rs = null;
         try
         {
-            
-        set_dbconnection(true);
+        if(!cn.isValid(2)){
+            System.out.println("here");
+           this.cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd");
+        }
         Statement ste= cn.createStatement();
         rs = ste.executeQuery(query);
         return rs;
         }
         catch(Exception e)
         {
-            try{
-          cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_emb?zeroDateTimeBehavior=convertToNull","root","");
-          st=cn.createStatement(); 
-           }catch(Exception ex){
-               JOptionPane.showMessageDialog(null, "proplem with local database");
-           }
+           JOptionPane.showMessageDialog(null,e); 
         }
         return rs;
     }//end select query
      public void updata_query(String query) 
     {
         try{
-        
-            set_dbconnection(true);
+            if(cn.isValid(2));
+            else{
+               this.cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd");
+                 }
             Statement ste= cn.createStatement();
             ste.executeUpdate(query);
         }
         catch(Exception e)
-        {
-            try{
-          cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_emb?zeroDateTimeBehavior=convertToNull","root","");
-          st=cn.createStatement(); 
-           }catch(Exception ex){
-               JOptionPane.showMessageDialog(null, "proplem with local database");
-           }
+        {   
+            JOptionPane.showMessageDialog(null,e);
         }   
     }//end update query
+     public void switch_to_local(){
+ try {
+    if(iscloud){
+    cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","root","");
+    iscloud = false;
+        }
+    else{
+       this.cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd"); 
+       iscloud = true;
+    }
+            } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,"Problem with local "+ex);
+        }
+     }
      public void close_db(){
         try {
             cn.close();
@@ -98,7 +105,36 @@ public class Database {
             JOptionPane.showMessageDialog(null, ex);
         }
      }
-     public boolean isnet(){
+    /*
+   public void set_dbconnection(boolean cloud){
+       if(cloud){
+           try{
+                dm=cn.getMetaData();
+                if(dm.getUserName().equals("root@localhost")){
+                cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd");
+                
+                //st=cn.createStatement(); 
+                }
+                 }
+                 catch(Exception e){
+                     System.out.println(e);
+                     set_dbconnection(false);
+           }
+       }
+       else{
+           try{
+          cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","root","");
+          st=cn.createStatement(); 
+           }catch(Exception e){
+               JOptionPane.showMessageDialog(null, "proplem with local database");
+           }
+       }
+   }
+     */
+}
+     
+
+/* public boolean isnet(){
          boolean flag = false;
          try{
                     con = (HttpURLConnection) url.openConnection();
@@ -111,30 +147,4 @@ public class Database {
                     System.out.println("No Connection");
             } 
          return flag;
-    }//end of function
-   public void set_dbconnection(boolean cloud){
-       if(cloud){
-           try{
-                dm=cn.getMetaData();
-                if(dm.getUserName().equals("root@localhost")){
-                cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_emb?zeroDateTimeBehavior=convertToNull","klydar_talaat","&?f2~PPhXwqd");
-                System.out.println("Cloud");
-                //st=cn.createStatement(); 
-                }
-                 }
-                 catch(Exception e){
-                     set_dbconnection(false);
-           }
-       }
-       else{
-           try{
-          cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_emb?zeroDateTimeBehavior=convertToNull","root","");
-          st=cn.createStatement(); 
-           }catch(Exception e){
-               JOptionPane.showMessageDialog(null, "proplem with local database");
-           }
-       }
-   }
-}
-     
-
+    }//end of function */

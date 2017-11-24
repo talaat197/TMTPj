@@ -20,6 +20,9 @@ public class CertSetting extends javax.swing.JFrame {
         initComponents();
         format.add("LANDSCAPE");
         format.add("PORTARATE");
+        NX.setText(Integer.toString(Directprint.Cname_coordinate[0]) );
+        NY.setText(Integer.toString(Directprint.Cname_coordinate[1]) );
+        
     }
 
     /**
