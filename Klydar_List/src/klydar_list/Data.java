@@ -60,7 +60,7 @@ import javax.swing.table.TableModel;
 public class Data extends javax.swing.JFrame{
     JTable Userdata;
     DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-     Database db;
+    public  Database db;
      ResultSet global_data;
      private byte  first_time = 0;
     /**
@@ -115,7 +115,7 @@ public class Data extends javax.swing.JFrame{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Data of Users");
 
-        jPanel1.setBackground(new java.awt.Color(51, 51, 0));
+        jPanel1.setBackground(java.awt.Color.white);
 
         jScrollPane1.setBackground(new java.awt.Color(51, 51, 51));
         jScrollPane1.setForeground(new java.awt.Color(102, 102, 102));
@@ -336,7 +336,6 @@ public class Data extends javax.swing.JFrame{
         Switch.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
         Switch.setForeground(new java.awt.Color(255, 255, 255));
         Switch.setText("OFFLINE");
-        Switch.setActionCommand("OFFLINE");
         Switch.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         Switch.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -455,7 +454,8 @@ public class Data extends javax.swing.JFrame{
             Directprint lt = new Directprint(0); // Name tag 
             lt.barcode_generate(Integer.toString(id));
             lt.printString(name);
-            
+            db.updata_query(DatabaseConstants.set_attend+id+"'");
+            Userdata.setValueAt("ON",rownum,2);
             }//end else
         }catch(Exception e ){
             JOptionPane.showMessageDialog(null, e);

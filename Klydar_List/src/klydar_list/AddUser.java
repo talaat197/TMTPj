@@ -5,6 +5,8 @@
  */
 package klydar_list;
 
+import java.sql.ResultSet;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -44,6 +46,7 @@ public class AddUser extends javax.swing.JFrame {
         sponsor_field = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        add_print = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add User");
@@ -112,6 +115,16 @@ public class AddUser extends javax.swing.JFrame {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/Spin_1.gif"))); // NOI18N
 
+        add_print.setBackground(new java.awt.Color(0, 153, 153));
+        add_print.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        add_print.setForeground(java.awt.Color.white);
+        add_print.setText("ADD&Print");
+        add_print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                add_printActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -129,20 +142,23 @@ public class AddUser extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(71, 71, 71)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(73, 73, 73)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(98, 98, 98))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(name_field)
                             .addComponent(mail_field)
                             .addComponent(mob_field, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sponsor_field, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
-                        .addGap(74, 74, 74))))
+                            .addComponent(sponsor_field, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE))
+                        .addGap(74, 74, 74))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(55, 55, 55)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,7 +186,8 @@ public class AddUser extends javax.swing.JFrame {
                         .addGap(49, 49, 49)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(37, 37, 37)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -233,11 +250,53 @@ public class AddUser extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void add_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_printActionPerformed
+        // TODO add your handling code here:
+        try{
+            String name=name_field.getText();
+            int mob = Integer.parseInt(mob_field.getText());
+            String Email = mail_field.getText();
+            String Sponsor = sponsor_field.getText();
+            if(name.equals("") || Email.equals("") || Sponsor.equals(""))
+            {
+                JOptionPane.showMessageDialog(null , "Please Fill All Fields","Empty fields",JOptionPane.WARNING_MESSAGE);
+            }//end validate
+            else
+            {
+                String query = "INSERT INTO `lists` (`vip`, `tag`, `conf_id`, `Payment`, `name`, `name_ar`, `type`, `attendees`, `on_site`, `mobile`, `email`, `position`, `address`, `sponsor`, `name_tag`, `bag`, `coffee`, `lunch`, `certificate`, `presence`, `create_time`, `name_tag_time`, `certificate_time`, `bag_time`, `coffee_time`, `lunch_time`, `update_time`, `Profession`, `Institution`, `note`, `country`, `Reg`, `Hotel`, `Session Title`)" +
+                    "VALUES ('', '', 0, '', '"+name+"', '', '', 1, 0, '"+mob+"', '"+Email+"', '', '', '"+Sponsor+"', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '', '', '', '')";
+                ref.db.updata_query(query);
+                query = "select ID from lists where name='"+name+"' && mobile='"+mob+"'";
+                ResultSet id_data = ref.db.select_query(query);
+                int id =0;
+                if(id_data.next()){
+                    id = id_data.getInt("ID");
+                }
+                Directprint print = new Directprint(0);
+                print.barcode_generate(Integer.toString(id));
+                print.printString(name);
+                JOptionPane.showMessageDialog(null , "Done :)");
+                
+            }
+        }//end try
+        catch(NumberFormatException e)
+        {
+            JFrame frame = new JFrame("Example");
+            JOptionPane.showMessageDialog(null,"Check Mobile Number","Invalid data",JOptionPane.WARNING_MESSAGE);
+        }
+        catch(Exception exx)
+        {
+            JOptionPane.showMessageDialog(null, "Invalid Data "+exx,"Invalid User Data",JOptionPane.WARNING_MESSAGE);
+        }
+                              
+    }//GEN-LAST:event_add_printActionPerformed
+
     /**
      * @param args the command line arguments
      */
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add_print;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;

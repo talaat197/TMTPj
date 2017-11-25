@@ -46,7 +46,7 @@ public class Directprint implements Printable {
     public static int[] Cname_coordinate = {560,200};
     
     public static int Cname_x   = 200;
-    public Directprint(int who) { //specify u want to print nametag or cirtification
+    public Directprint(int who) { //specify u want to print nametag or cirtification 0 for barcode 1 for certificate
         nametag_cirtificate=who;
         this.printService = PrintServiceLookup.lookupDefaultPrintService();
         
