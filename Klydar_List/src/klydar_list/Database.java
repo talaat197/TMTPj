@@ -23,10 +23,17 @@ import javax.swing.JTextField;
  * @author Talaat
  */
 public class Database {
-    boolean iscloud;
+    static boolean iscloud;
     static boolean global_flag = false;
     Connection cn;
     Statement st;
+    //specify IP->0 DB Name->1
+    String [] LAN_info = {"192.168.1.107:3306","klydar_cm"};
+    String LAN = "jdbc:mysql://"+LAN_info[0]+"/"+LAN_info[1]+"?zeroDateTimeBehavior=convertToNull";
+    //Cloud info IP->0 , DB Name->1 , username->2 , password->3
+    String[] CLOUD_info = {"192.185.13.161:3306","klydar_cm","klydar","&?f2~PPhXwqd"};
+    String CLOUD ="jdbc:mysql://"+CLOUD_info[0]+"/"+CLOUD_info[1]+"?zeroDateTimeBehavior=convertToNull";
+    String LOCAL = "jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull";
     //HttpURLConnection con;
     //URL url;
     DatabaseMetaData dm;
@@ -35,12 +42,12 @@ public class Database {
         try
         {
          Class.forName("com.mysql.jdbc.Driver");
-         this.cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd");
+         this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
          iscloud=true;
         }
         catch(Exception e)
         {try{
-       cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","root","");
+       cn = DriverManager.getConnection(LOCAL,"root","");
        
        iscloud=false;
        st=cn.createStatement();
@@ -56,8 +63,7 @@ public class Database {
         try
         {
         if(!cn.isValid(2)){
-            System.out.println("here");
-           this.cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd");
+           this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
         }
         Statement ste= cn.createStatement();
         rs = ste.executeQuery(query);
@@ -74,7 +80,7 @@ public class Database {
         try{
             if(cn.isValid(2));
             else{
-               this.cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd");
+               this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
                  }
             Statement ste= cn.createStatement();
             ste.executeUpdate(query);
@@ -84,19 +90,24 @@ public class Database {
             JOptionPane.showMessageDialog(null,e);
         }   
     }//end update query
-     public void switch_to_local(){
+     public void switch_to_local(int choice){ // take the choice of the connection -> {Localhost , Cloud , LAN connection}
  try {
-    if(iscloud){
-    cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","root","");
+    if(choice == 0){//conncet to the localhost
+    cn = DriverManager.getConnection(LOCAL,"root","");
     iscloud = false;
         }
-    else{
-       this.cn = DriverManager.getConnection("jdbc:mysql://192.185.13.161:3306/klydar_cm?zeroDateTimeBehavior=convertToNull","klydar","&?f2~PPhXwqd"); 
+    else if (choice == 1){ //connect to the cloud
+       this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
        iscloud = true;
     }
-            } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,"Problem with local "+ex);
-        }
+    else if(choice == 2){//lan connection
+        System.out.println(LAN);
+        this.cn = DriverManager.getConnection(LAN); 
+            }
+    } catch (Exception ex) {
+    JOptionPane.showMessageDialog(null,"Problem with The connection you choosed "+ ex);
+}
+    
      }
      public void close_db(){
         try {

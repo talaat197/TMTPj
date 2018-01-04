@@ -6,7 +6,6 @@
 package klydar_list;
 
 import java.sql.ResultSet;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,7 +20,9 @@ public class AddUser extends javax.swing.JFrame {
     static Data ref;
     public AddUser(Data s) {
         initComponents();
+        setLocationRelativeTo(null);
         ref = s;
+        name_field.requestFocus();  
     }
 
     /**
@@ -34,14 +35,13 @@ public class AddUser extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         mob_field = new javax.swing.JTextField();
         name_field = new javax.swing.JTextField();
         mail_field = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        add = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         sponsor_field = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -51,26 +51,24 @@ public class AddUser extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add User");
 
-        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTextField1.setBackground(new java.awt.Color(51, 51, 51));
-        jTextField1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("Add User");
-
+        jLabel1.setBackground(java.awt.Color.white);
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 153, 0));
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setText("Name");
 
+        jLabel2.setBackground(java.awt.Color.white);
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 153, 0));
+        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
         jLabel2.setText("Mobile");
 
+        jLabel3.setBackground(java.awt.Color.white);
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 153, 0));
+        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
         jLabel3.setText("Email");
 
+        mob_field.setBackground(new java.awt.Color(204, 204, 204));
         mob_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         mob_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         mob_field.addActionListener(new java.awt.event.ActionListener() {
@@ -79,25 +77,25 @@ public class AddUser extends javax.swing.JFrame {
             }
         });
 
+        name_field.setBackground(new java.awt.Color(204, 204, 204));
         name_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         name_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
+        mail_field.setBackground(new java.awt.Color(204, 204, 204));
         mail_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         mail_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jButton1.setBackground(new java.awt.Color(0, 153, 153));
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Add");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        add.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        add.setForeground(new java.awt.Color(51, 51, 51));
+        add.setText("Add");
+        add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                addActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(0, 153, 153));
-        jButton2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(51, 51, 51));
         jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -105,20 +103,21 @@ public class AddUser extends javax.swing.JFrame {
             }
         });
 
+        sponsor_field.setBackground(new java.awt.Color(204, 204, 204));
         sponsor_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         sponsor_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         sponsor_field.setText("Individual");
 
+        jLabel4.setBackground(java.awt.Color.white);
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 153, 0));
+        jLabel4.setForeground(new java.awt.Color(102, 102, 102));
         jLabel4.setText("Sponsor");
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/Spin_1.gif"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/loading.gif"))); // NOI18N
 
-        add_print.setBackground(new java.awt.Color(0, 153, 153));
-        add_print.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        add_print.setForeground(java.awt.Color.white);
-        add_print.setText("ADD&Print");
+        add_print.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        add_print.setForeground(new java.awt.Color(51, 51, 51));
+        add_print.setText("Add & Print");
         add_print.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 add_printActionPerformed(evt);
@@ -129,43 +128,35 @@ public class AddUser extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTextField1)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(179, 179, 179)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(179, 179, 179)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel1)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(71, 71, 71)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel1))
+                .addGap(73, 73, 73)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(name_field)
-                            .addComponent(mail_field)
-                            .addComponent(mob_field, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sponsor_field, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE))
-                        .addGap(74, 74, 74))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(55, 55, 55)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(51, 51, 51))))
+                    .addComponent(name_field)
+                    .addComponent(mail_field)
+                    .addComponent(mob_field, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sponsor_field, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGap(74, 74, 74))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(228, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(98, 98, 98))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(63, 63, 63)
+                .addGap(121, 121, 121)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(name_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
@@ -181,17 +172,14 @@ public class AddUser extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sponsor_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
+                .addGap(49, 49, 49)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(54, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -218,7 +206,7 @@ public class AddUser extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_mob_fieldActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         // TODO add your handling code here:
         try
         {
@@ -233,11 +221,14 @@ public class AddUser extends javax.swing.JFrame {
             else
             {
                 String query = "INSERT INTO `lists` (`vip`, `tag`, `conf_id`, `Payment`, `name`, `name_ar`, `type`, `attendees`, `on_site`, `mobile`, `email`, `position`, `address`, `sponsor`, `name_tag`, `bag`, `coffee`, `lunch`, `certificate`, `presence`, `create_time`, `name_tag_time`, `certificate_time`, `bag_time`, `coffee_time`, `lunch_time`, `update_time`, `Profession`, `Institution`, `note`, `country`, `Reg`, `Hotel`, `Session Title`)" +
-                    "VALUES ('', '', 0, '', '"+name+"', '', '', 0, 0, '"+mob+"', '"+Email+"', '', '', '"+Sponsor+"', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '', '', '', '')";
-                Database obje = new Database();
-                obje.updata_query(query);
+                    "VALUES ('', '', 0, '', '"+name+"', '', '', 1, 0, '"+mob+"', '"+Email+"', '', '', '"+Sponsor+"', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '', '', '', '')";
+                
+                ref.db.updata_query(query);
                 JOptionPane.showMessageDialog(null , "Done :)");
-                obje.close_db();
+                name_field.setText("");
+                mob_field.setText("");
+                mail_field.setText("");
+                
             }
         }//end try
         catch(NumberFormatException e)
@@ -248,11 +239,12 @@ public class AddUser extends javax.swing.JFrame {
         {
             JOptionPane.showMessageDialog(null, "InValid Data");
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_addActionPerformed
 
     private void add_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_printActionPerformed
         // TODO add your handling code here:
-        try{
+        
+try{
             String name=name_field.getText();
             int mob = Integer.parseInt(mob_field.getText());
             String Email = mail_field.getText();
@@ -263,7 +255,7 @@ public class AddUser extends javax.swing.JFrame {
             }//end validate
             else
             {
-                String query = "INSERT INTO `lists` (`vip`, `tag`, `conf_id`, `Payment`, `name`, `name_ar`, `type`, `attendees`, `on_site`, `mobile`, `email`, `position`, `address`, `sponsor`, `name_tag`, `bag`, `coffee`, `lunch`, `certificate`, `presence`, `create_time`, `name_tag_time`, `certificate_time`, `bag_time`, `coffee_time`, `lunch_time`, `update_time`, `Profession`, `Institution`, `note`, `country`, `Reg`, `Hotel`, `Session Title`)" +
+                String query ="INSERT INTO `lists` (`vip`, `tag`, `conf_id`, `Payment`, `name`, `name_ar`, `type`, `attendees`, `on_site`, `mobile`, `email`, `position`, `address`, `sponsor`, `name_tag`, `bag`, `coffee`, `lunch`, `certificate`, `presence`, `create_time`, `name_tag_time`, `certificate_time`, `bag_time`, `coffee_time`, `lunch_time`, `update_time`, `Profession`, `Institution`, `note`, `country`, `Reg`, `Hotel`, `Session Title`)" +
                     "VALUES ('', '', 0, '', '"+name+"', '', '', 1, 0, '"+mob+"', '"+Email+"', '', '', '"+Sponsor+"', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '', '', '', '')";
                 ref.db.updata_query(query);
                 query = "select ID from lists where name='"+name+"' && mobile='"+mob+"'";
@@ -275,20 +267,21 @@ public class AddUser extends javax.swing.JFrame {
                 Directprint print = new Directprint(0);
                 print.barcode_generate(Integer.toString(id));
                 print.printString(name);
-                JOptionPane.showMessageDialog(null , "Done :)");
+                JOptionPane.showMessageDialog(null , "Done 🙂");
+                name_field.setText("");
+                mob_field.setText("");
+                mail_field.setText("");
                 
             }
         }//end try
         catch(NumberFormatException e)
         {
-            JFrame frame = new JFrame("Example");
             JOptionPane.showMessageDialog(null,"Check Mobile Number","Invalid data",JOptionPane.WARNING_MESSAGE);
         }
         catch(Exception exx)
         {
             JOptionPane.showMessageDialog(null, "Invalid Data "+exx,"Invalid User Data",JOptionPane.WARNING_MESSAGE);
         }
-                              
     }//GEN-LAST:event_add_printActionPerformed
 
     /**
@@ -296,8 +289,8 @@ public class AddUser extends javax.swing.JFrame {
      */
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add;
     private javax.swing.JButton add_print;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -305,7 +298,6 @@ public class AddUser extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField mail_field;
     private javax.swing.JTextField mob_field;
     private javax.swing.JTextField name_field;

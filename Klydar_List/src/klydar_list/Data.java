@@ -30,6 +30,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -50,7 +51,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import javax.swing.text.Highlighter;
 
 
 /**
@@ -60,7 +64,8 @@ import javax.swing.table.TableModel;
 public class Data extends javax.swing.JFrame{
     JTable Userdata;
     DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-    public  Database db;
+    DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
+     public Database db;
      ResultSet global_data;
      private byte  first_time = 0;
     /**
@@ -74,6 +79,8 @@ public class Data extends javax.swing.JFrame{
         display_data();
         set_style();
         insert_buttons();
+        search.requestFocus();
+        setLocationRelativeTo(null);
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(null, e);
@@ -92,40 +99,36 @@ public class Data extends javax.swing.JFrame{
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jLabel2 = new javax.swing.JLabel();
         search = new javax.swing.JTextField();
         print_bt = new javax.swing.JButton();
         filter_type = new javax.swing.JComboBox<>();
         filter_sponsor = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         Crtificate = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         print_cert = new javax.swing.JTextField();
-        Print_c = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
-        Switch = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
         Tagsettings = new javax.swing.JMenu();
         certificatesettings = new javax.swing.JMenu();
+        Switch = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
+        lan_connection = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Data of Users");
 
-        jPanel1.setBackground(java.awt.Color.white);
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 20));
+        jPanel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
-        jScrollPane1.setBackground(new java.awt.Color(51, 51, 51));
-        jScrollPane1.setForeground(new java.awt.Color(102, 102, 102));
+        jScrollPane1.setBackground(new java.awt.Color(204, 204, 204));
+        jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Search");
-
-        search.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        search.setBackground(new java.awt.Color(242, 242, 242));
+        search.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         search.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        search.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         search.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchActionPerformed(evt);
@@ -137,50 +140,40 @@ public class Data extends javax.swing.JFrame{
             }
         });
 
-        print_bt.setBackground(new java.awt.Color(0, 153, 153));
-        print_bt.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
-        print_bt.setForeground(new java.awt.Color(255, 255, 255));
-        print_bt.setText("Print Tag");
+        print_bt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        print_bt.setForeground(new java.awt.Color(51, 51, 51));
+        print_bt.setText("Name Tag");
         print_bt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 print_btActionPerformed(evt);
             }
         });
 
-        filter_type.setBackground(new java.awt.Color(0, 153, 153));
-        filter_type.setFont(new java.awt.Font("Tahoma", 3, 18)); // NOI18N
-        filter_type.setForeground(new java.awt.Color(255, 255, 255));
+        filter_type.setBackground(new java.awt.Color(242, 242, 242));
+        filter_type.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        filter_type.setForeground(new java.awt.Color(51, 51, 51));
         filter_type.setMaximumRowCount(1000);
-        filter_type.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Type", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        filter_type.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Type", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14), new java.awt.Color(51, 51, 51))); // NOI18N
         filter_type.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filter_typeActionPerformed(evt);
             }
         });
 
-        filter_sponsor.setBackground(new java.awt.Color(0, 153, 153));
-        filter_sponsor.setFont(new java.awt.Font("Tahoma", 3, 18)); // NOI18N
-        filter_sponsor.setForeground(new java.awt.Color(255, 255, 255));
+        filter_sponsor.setBackground(new java.awt.Color(242, 242, 242));
+        filter_sponsor.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        filter_sponsor.setForeground(new java.awt.Color(51, 51, 51));
         filter_sponsor.setMaximumRowCount(1000);
         filter_sponsor.setAutoscrolls(true);
-        filter_sponsor.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sponsor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+        filter_sponsor.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Sponsor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14), new java.awt.Color(51, 51, 51))); // NOI18N
         filter_sponsor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filter_sponsorActionPerformed(evt);
             }
         });
 
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(51, 51, 0));
-        jTextField1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("User Data");
-        jTextField1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51), 2));
-
-        jButton1.setBackground(new java.awt.Color(0, 153, 153));
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setForeground(new java.awt.Color(51, 51, 51));
         jButton1.setText("Reset");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -188,21 +181,21 @@ public class Data extends javax.swing.JFrame{
             }
         });
 
-        Crtificate.setBackground(new java.awt.Color(0, 153, 153));
-        Crtificate.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
-        Crtificate.setForeground(new java.awt.Color(255, 255, 255));
-        Crtificate.setText("Print Certificate");
+        Crtificate.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        Crtificate.setForeground(new java.awt.Color(51, 51, 51));
+        Crtificate.setText("Certificate");
         Crtificate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CrtificateActionPerformed(evt);
             }
         });
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/Spin_1.gif"))); // NOI18N
-
-        print_cert.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        print_cert.setBackground(new java.awt.Color(242, 242, 242));
+        print_cert.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        print_cert.setForeground(new java.awt.Color(102, 102, 102));
         print_cert.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        print_cert.setText("Certificate ID");
+        print_cert.setToolTipText("Print Certificate");
         print_cert.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 print_certMouseReleased(evt);
@@ -219,91 +212,62 @@ public class Data extends javax.swing.JFrame{
             }
         });
 
-        Print_c.setBackground(new java.awt.Color(255, 158, 0));
-        Print_c.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        Print_c.setForeground(new java.awt.Color(255, 185, 0));
-        Print_c.setText("Print Certificate");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46)
-                        .addComponent(jButton1)
-                        .addGap(38, 38, 38)
-                        .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(135, 135, 135))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(Print_c, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(print_cert, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(314, 314, 314))))
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(print_cert, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                        .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)
+                        .addGap(3, 3, 3))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(search)
+                                .addGap(18, 18, 18)
+                                .addComponent(Crtificate, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 324, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Crtificate, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jTextField1)))
-                .addContainerGap())
+                                .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(16, 16, 16)))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(print_cert, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(Print_c, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                        .addGap(6, 6, 6)))
-                .addGap(38, 38, 38)
+                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(Crtificate, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                    .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Crtificate, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                 .addGap(26, 26, 26)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(56, 56, 56))
+                        .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(print_cert, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(53, 53, 53))
         );
 
-        jMenuBar1.setBackground(new java.awt.Color(0, 153, 153));
-        jMenuBar1.setForeground(new java.awt.Color(255, 153, 0));
+        jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
+        jMenuBar1.setForeground(new java.awt.Color(204, 204, 204));
         jMenuBar1.setToolTipText("");
 
-        jMenu1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
-        jMenu1.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu1.setText("Add User");
-        jMenu1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jMenu1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        jMenu1.setForeground(new java.awt.Color(102, 102, 102));
+        jMenu1.setText("Add New");
+        jMenu1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jMenu1MousePressed(evt);
@@ -311,32 +275,32 @@ public class Data extends javax.swing.JFrame{
         });
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
-        jMenu2.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu2.setText("Refresh");
-        jMenu2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
+        Tagsettings.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        Tagsettings.setForeground(new java.awt.Color(102, 102, 102));
+        Tagsettings.setText("Tag Settings");
+        Tagsettings.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Tagsettings.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jMenu2MousePressed(evt);
+                TagsettingsMousePressed(evt);
             }
         });
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(Tagsettings);
 
-        jMenu3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
-        jMenu3.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu3.setText("Screen Shoot");
-        jMenu3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jMenu3.addMouseListener(new java.awt.event.MouseAdapter() {
+        certificatesettings.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        certificatesettings.setForeground(new java.awt.Color(102, 102, 102));
+        certificatesettings.setText("Certificate Settings");
+        certificatesettings.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        certificatesettings.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jMenu3MousePressed(evt);
+                certificatesettingsMousePressed(evt);
             }
         });
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(certificatesettings);
 
-        Switch.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
-        Switch.setForeground(new java.awt.Color(255, 255, 255));
-        Switch.setText("OFFLINE");
-        Switch.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        Switch.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        Switch.setForeground(new java.awt.Color(102, 102, 102));
+        Switch.setText("ONLINE");
+        Switch.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         Switch.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 SwitchMousePressed(evt);
@@ -347,38 +311,28 @@ public class Data extends javax.swing.JFrame{
         });
         jMenuBar1.add(Switch);
 
-        jMenu5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)));
-        jMenu5.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu5.setText("Edit");
-        jMenu5.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+        jMenu2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        jMenu2.setForeground(new java.awt.Color(102, 102, 102));
+        jMenu2.setText("Refresh");
+        jMenu2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jMenu5MousePressed(evt);
+                jMenu2MousePressed(evt);
             }
         });
-        jMenuBar1.add(jMenu5);
+        jMenuBar1.add(jMenu2);
 
-        Tagsettings.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        Tagsettings.setForeground(java.awt.Color.white);
-        Tagsettings.setText("Print Tag Settings");
-        Tagsettings.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        Tagsettings.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                TagsettingsMousePressed(evt);
-            }
-        });
-        jMenuBar1.add(Tagsettings);
+        jMenu4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 100, 1, 1));
+        jMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/loading.gif"))); // NOI18N
+        jMenuBar1.add(jMenu4);
 
-        certificatesettings.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        certificatesettings.setForeground(new java.awt.Color(255, 255, 255));
-        certificatesettings.setText("print Certificate Settings");
-        certificatesettings.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        certificatesettings.addMouseListener(new java.awt.event.MouseAdapter() {
+        lan_connection.setText("LAN Connection");
+        lan_connection.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                certificatesettingsMousePressed(evt);
+                lan_connectionMousePressed(evt);
             }
         });
-        jMenuBar1.add(certificatesettings);
+        jMenuBar1.add(lan_connection);
 
         setJMenuBar(jMenuBar1);
 
@@ -396,52 +350,9 @@ public class Data extends javax.swing.JFrame{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchActionPerformed
-
-    private void searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchKeyReleased
-        // TODO add your handling code here:
-        try
-        {
-            String data = search.getText();
-            Userdata = new JTable(buildTableModel(global_data));
-            global_data.beforeFirst();
-            
-            set_style();
-            for(int i=0 ; i<Userdata.getRowCount(); i++)
-            {
-                if(Userdata.getValueAt(i,1).toString().toLowerCase().contains(data.toLowerCase()));
-                else if (Userdata.getValueAt(i, 0).toString().toLowerCase().contains(data.toLowerCase()));
-                else if(Userdata.getValueAt(i,5).toString().toLowerCase().contains(data.toLowerCase()));
-                else
-                {
-                    TableModel model = Userdata.getModel();
-                        if (model instanceof DefaultTableModel) {
-                            ((DefaultTableModel) model).removeRow(i);
-                            i--;
-                        }
-                }
-            }//end loop searching in table
-            
-            insert_buttons();
-        }
-        catch(Exception e)
-        {
-            try {
-               Statement new_ste = db.cn.createStatement();
-                global_data=new_ste.executeQuery(DatabaseConstants.all_data);
-                
-                searchKeyReleased(evt);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, e+" \nSearch Table");
-            }
-        }
-    }//GEN-LAST:event_searchKeyReleased
-
     private void print_btActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_print_btActionPerformed
         // TODO add your handling code here:
-        try{
+       try{
             if(Userdata.getSelectedRowCount()>1 || Userdata.getSelectedRowCount()==0)
             {
                 JOptionPane.showMessageDialog(null,"Choose only one user");
@@ -456,11 +367,11 @@ public class Data extends javax.swing.JFrame{
             lt.printString(name);
             db.updata_query(DatabaseConstants.set_attend+id+"'");
             Userdata.setValueAt("ON",rownum,2);
+            JOptionPane.showMessageDialog(null, "Done Printing");
             }//end else
         }catch(Exception e ){
             JOptionPane.showMessageDialog(null, e);
         }
-        
     }//GEN-LAST:event_print_btActionPerformed
     //*******************************************
     public void Action_cell()
@@ -482,40 +393,45 @@ public class Data extends javax.swing.JFrame{
                                 String name="";
                                 int selected_row=Userdata.getSelectedRow();
                                 int id = Integer.parseInt(Userdata.getValueAt(selected_row,0).toString()); 
-                                if(Userdata.getSelectedColumn()==3)//type field
+                                if(Userdata.getSelectedColumn()==4)//type field
                                 {
-                                    type = Userdata.getValueAt(selected_row, 3).toString();
+                                    type = Userdata.getValueAt(selected_row, 4).toString();
                                     db.updata_query(DatabaseConstants.Update_table("lists","type",type,id));
                                 }
-                                else if (Userdata.getSelectedColumn()==4)//sponsor field
+                                else if (Userdata.getSelectedColumn()==5)//sponsor field
                                 {
-                                    sponsor = Userdata.getValueAt(selected_row, 4).toString();
+                                    sponsor = Userdata.getValueAt(selected_row, 5).toString();
                                     db.updata_query(DatabaseConstants.Update_table("lists","sponsor",sponsor,id));
-                                }
-                                else if (Userdata.getSelectedColumn()==5)//AFF field
-                                {
-                                     AFF = Userdata.getValueAt(selected_row, 5).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","mobile",AFF,id));
                                 }
                                 else if (Userdata.getSelectedColumn()==6)//AFF field
                                 {
                                      AFF = Userdata.getValueAt(selected_row, 6).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","Profession",AFF,id));
+                                    db.updata_query(DatabaseConstants.Update_table("lists","mobile",AFF,id));
                                 }
-                                else if (Userdata.getSelectedColumn()==7)//Name Field
+                                else if (Userdata.getSelectedColumn()==7)//AFF field
                                 {
-                                    name = Userdata.getValueAt(selected_row,7).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","Institution",name,id));
+                                     AFF = Userdata.getValueAt(selected_row, 7).toString();
+                                    db.updata_query(DatabaseConstants.Update_table("lists","Profession",AFF,id));
                                 }
                                 else if (Userdata.getSelectedColumn()==8)//Name Field
                                 {
                                     name = Userdata.getValueAt(selected_row,8).toString();
+                                    db.updata_query(DatabaseConstants.Update_table("lists","Institution",name,id));
+                                }
+                                else if (Userdata.getSelectedColumn()==9)//Name Field
+                                {
+                                    name = Userdata.getValueAt(selected_row,9).toString();
                                     db.updata_query(DatabaseConstants.Update_table("lists","country",name,id));
                                 }
                                 else if (Userdata.getSelectedColumn()==1)//Name Field
                                 {
                                     name = Userdata.getValueAt(selected_row, 1).toString();
                                     db.updata_query(DatabaseConstants.Update_table("lists","name",name,id));
+                                }
+                                else if (Userdata.getSelectedColumn()==3)//Name Field
+                                {
+                                    name = Userdata.getValueAt(selected_row, 3).toString();
+                                    db.updata_query(DatabaseConstants.Update_table("lists","email",name,id));
                                 }
                             }//if select one row
                             else
@@ -588,13 +504,13 @@ public class Data extends javax.swing.JFrame{
         }
         catch(Exception e)
         {
-            
+            JOptionPane.showMessageDialog(null, e);
         }
     }//GEN-LAST:event_jMenu1MousePressed
 
     private void jMenu2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MousePressed
         // TODO add your handling code here:
-         filter_sponsor.removeAllItems();
+        filter_sponsor.removeAllItems();
         filter_type.removeAllItems();
         display_data();
         insert_buttons();
@@ -606,50 +522,25 @@ public class Data extends javax.swing.JFrame{
         filter_type.setSelectedIndex(0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jMenu3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MousePressed
-        // TODO add your handling code here:
-         /*try {
-             Webcam webcam = Webcam.getDefault();
-            webcam.open();
-            ImageIO.write(webcam.getImage(), "PNG", new File("D:\\hello-world.png"));
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }*/
-    }//GEN-LAST:event_jMenu3MousePressed
-
     private void SwitchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SwitchMousePressed
-        // TODO add your handling code here:
+        // TODO add your handling code here:    
         
-        db.switch_to_local();
+        
+        if(Database.iscloud==false)
+        {
+            Switch.setText("ONLINE");
+            db.switch_to_local(1);//switch to global
+        }
+        else
+        {
+            Switch.setText("OFFLINE");
+            db.switch_to_local(0); // switch to local
+        }
         filter_sponsor.removeAllItems();
         filter_type.removeAllItems();
         display_data();
         insert_buttons();
-        
     }//GEN-LAST:event_SwitchMousePressed
-
-    private void jMenu5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MousePressed
-        // TODO add your handling code here:
-        try{
-            /*
-             if(Userdata.getSelectedRowCount()>1)
-            {
-                JOptionPane.showMessageDialog(null,"choose only one user");
-            }
-            else
-            {
-            int rownum = Userdata.getSelectedRow();
-           int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
-            String name = Userdata.getValueAt(rownum, 1).toString();
-            Ubdate_data s = new Ubdate_data(name, id ,this);
-            s.setVisible(true); 
-            setVisible(false);
-            } //end else*/
-            JOptionPane.showMessageDialog(null,"Edit from tables");
-        }catch(Exception e){
-            
-        }
-    }//GEN-LAST:event_jMenu5MousePressed
 
     private void CrtificateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrtificateActionPerformed
         // TODO add your handling code here:
@@ -663,8 +554,29 @@ public class Data extends javax.swing.JFrame{
             int rownum = Userdata.getSelectedRow();
            // int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
             String name = Userdata.getValueAt(rownum, 1).toString();
+            StringBuilder myName = new StringBuilder(name);
+            for(int i=0 ; i<name.length() ; i++)
+            {
+                if(i==0)
+                {
+                    myName.setCharAt(i, Character.toUpperCase(name.charAt(i)));
+                }
+                else if (name.charAt(i)==' ')
+                {
+                    for(int k=i ; k<name.length() ; k++)
+                    {
+                        if(name.charAt(k)!=' ')
+                        {
+                            myName.setCharAt(k, Character.toUpperCase(name.charAt(k)));
+                            k=name.length();
+                        }
+                    }
+                }
+            }
+            name = myName.toString();
             Directprint lt = new Directprint(1); // Name tag 
             lt.printString(name);
+            JOptionPane.showMessageDialog(null, "Done Printing");
             }//end else
           
         }catch(Exception e ){
@@ -694,23 +606,31 @@ public class Data extends javax.swing.JFrame{
 
     private void print_certMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_print_certMouseReleased
         // TODO add your handling code here:
-        
+        print_cert.setText("");
     }//GEN-LAST:event_print_certMouseReleased
 
     private void print_certKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_print_certKeyReleased
         // TODO add your handling code here:
         
-        try{
+      try{
         String name ="";
         String id = print_cert.getText();
         if(id.length()<4){
-            
+           //No Thing 
         }
         else{
-         
-        String query = DatabaseConstants.select_name+id+"'";
-        ResultSet rs = db.select_query(query);
-        if(rs.next()){
+        if(Advanced_Settings.directcon = false){// get data from table   
+         for (int k=0 ; k<Userdata.getRowCount() ; k++)
+         {
+             if(Userdata.getValueAt(k, 0).toString().equals(id))
+             {
+                 name = Userdata.getValueAt(k, 1).toString();
+             }
+         }//end searching
+        }//end if 
+        else{//get data from the database directly
+            String query= "select name from lists where id ="+id+"";
+            ResultSet rs = db.select_query(query);
             name = rs.getString("name");
         }
         StringBuilder myName = new StringBuilder(name);
@@ -744,6 +664,59 @@ public class Data extends javax.swing.JFrame{
             JOptionPane.showMessageDialog(null, e);
         }
     }//GEN-LAST:event_print_certKeyReleased
+
+    private void searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchKeyReleased
+        // TODO add your handling code here:
+        try
+        {
+            String data = search.getText();
+            Userdata = new JTable(buildTableModel(global_data));
+            global_data.beforeFirst();
+
+            set_style();
+            for(int i=0 ; i<Userdata.getRowCount(); i++)
+            {
+                if(Userdata.getValueAt(i,1).toString().toLowerCase().contains(data.toLowerCase()));
+                else if (Userdata.getValueAt(i, 0).toString().toLowerCase().contains(data.toLowerCase()));
+                else if(Userdata.getValueAt(i,6).toString().toLowerCase().contains(data.toLowerCase()));
+                else
+                {
+                    TableModel model = Userdata.getModel();
+                    if (model instanceof DefaultTableModel) {
+                        ((DefaultTableModel) model).removeRow(i);
+                        i--;
+                    }
+                }
+            }//end loop searching in table
+
+            insert_buttons();
+        }
+        catch(Exception e)
+        {
+            try {
+                Statement new_ste = db.cn.createStatement();
+                global_data=new_ste.executeQuery(DatabaseConstants.all_data);
+
+                searchKeyReleased(evt);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, e+" \nSearch Table");
+            }
+        }
+    }//GEN-LAST:event_searchKeyReleased
+
+    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchActionPerformed
+
+    private void lan_connectionMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lan_connectionMousePressed
+        // TODO add your handling code here:
+        db.switch_to_local(2);//switch to lan 
+        filter_sponsor.removeAllItems();
+        filter_type.removeAllItems();
+        display_data();
+        insert_buttons();
+        
+    }//GEN-LAST:event_lan_connectionMousePressed
     public void display_data()
     {    
         try
@@ -816,26 +789,32 @@ public class Data extends javax.swing.JFrame{
     {
         jScrollPane1.setViewportView(Userdata);
         rightRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        leftRenderer.setHorizontalAlignment(SwingConstants.LEFT);
         Userdata.getColumnModel().getColumn(0).setMinWidth(60);
         Userdata.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
         Userdata.getColumnModel().getColumn(1).setMinWidth(400);
-        Userdata.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-        Userdata.getColumnModel().getColumn(2).setMinWidth(140);
+        Userdata.getColumnModel().getColumn(1).setCellRenderer(leftRenderer);
+        Userdata.getColumnModel().getColumn(2).setMinWidth(160);
         Userdata.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
-        for(int i=3 ; i<9 ; i++)
+        Userdata.getColumnModel().getColumn(3).setMinWidth(300);
+        Userdata.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
+        for(int i=4 ; i<10 ; i++)
         {
             Userdata.getColumnModel().getColumn(i).setMinWidth(220);
              Userdata.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
         }
+         Color white_gray = new Color(251, 251, 251);
+        Userdata.setBackground(white_gray);
         Userdata.setFont((new Font("Arial Unicode MS", 0, 18)));
         Userdata.setRowHeight(40);
         Userdata.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 25));
         JTableHeader header = Userdata.getTableHeader();
-        Color black_orange = new Color(255,185,0);
+        Color white_blue = new Color(26, 198, 255);
+        Color white_gray_selection = new Color(217, 217, 217);
         Color ztone = new Color(0,153,153);
-        header.setBackground(black_orange);
-        header.setForeground(Color.BLACK);
-        Userdata.setSelectionBackground(black_orange);
+        header.setBackground(white_blue );
+        header.setForeground(Color.WHITE);
+        Userdata.setSelectionBackground(white_gray_selection );
         Userdata.setSelectionForeground(Color.BLACK);
         Userdata.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         for(int i=0 ; i<Userdata.getRowCount() ; i++)
@@ -860,7 +839,11 @@ public class Data extends javax.swing.JFrame{
              columnNames = new Vector<String>();
             int columnCount = metaData.getColumnCount();
             for (int column = 1; column <= columnCount; column++) {
-                columnNames.add(metaData.getColumnName(column));
+                String column_name = metaData.getColumnName(column);
+                StringBuilder myName = new StringBuilder(column_name);
+                myName.setCharAt(0, Character.toUpperCase(column_name.charAt(0)));
+                column_name = myName.toString();
+                columnNames.add(column_name);
             }
 
             // data of the table
@@ -888,23 +871,19 @@ public class Data extends javax.swing.JFrame{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Crtificate;
-    private javax.swing.JLabel Print_c;
     private javax.swing.JMenu Switch;
     private javax.swing.JMenu Tagsettings;
     private javax.swing.JMenu certificatesettings;
     private javax.swing.JComboBox<String> filter_sponsor;
     private javax.swing.JComboBox<String> filter_type;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JMenu lan_connection;
     private javax.swing.JButton print_bt;
     private javax.swing.JTextField print_cert;
     private javax.swing.JTextField search;
@@ -913,8 +892,8 @@ public class Data extends javax.swing.JFrame{
     public void insert_buttons()
 	{
             //add button in status
-        Userdata.getColumn("attendees").setCellRenderer(new ButtonRenderer());
-        Userdata.getColumn("attendees").setCellEditor(
+        Userdata.getColumn("Attendees").setCellRenderer(new ButtonRenderer());
+        Userdata.getColumn("Attendees").setCellEditor(
         new ButtonEditor(new JCheckBox(),1));
          
 	}//end function insert buttons
@@ -1022,3 +1001,11 @@ class ButtonEditor extends DefaultCellEditor {
 
     
 } // end of data class
+
+ /*try {
+             Webcam webcam = Webcam.getDefault();
+            webcam.open();
+            ImageIO.write(webcam.getImage(), "PNG", new File("D:\\hello-world.png"));
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }*/

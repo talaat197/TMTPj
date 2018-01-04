@@ -22,7 +22,7 @@ public class CertSetting extends javax.swing.JFrame {
         format.add("PORTARATE");
         NX.setText(Integer.toString(Directprint.Cname_coordinate[0]) );
         NY.setText(Integer.toString(Directprint.Cname_coordinate[1]) );
-        
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -49,22 +49,22 @@ public class CertSetting extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel1.setBackground(java.awt.Color.black);
+        jPanel1.setBackground(java.awt.Color.white);
         jPanel1.setForeground(java.awt.Color.white);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setForeground(java.awt.Color.white);
         jLabel1.setText("Certification Settings");
 
-        jLabel2.setForeground(java.awt.Color.white);
+        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
         jLabel2.setText("Format");
 
         format.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
 
-        jLabel3.setForeground(java.awt.Color.white);
+        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
         jLabel3.setText("X");
 
-        jLabel4.setForeground(java.awt.Color.white);
+        jLabel4.setForeground(new java.awt.Color(102, 102, 102));
         jLabel4.setText("Y");
 
         NX.setText("150");
@@ -72,17 +72,16 @@ public class CertSetting extends javax.swing.JFrame {
         NY.setText("200");
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel5.setForeground(java.awt.Color.white);
+        jLabel5.setForeground(new java.awt.Color(102, 102, 102));
         jLabel5.setText("NOTE:");
 
         jScrollPane1.setBackground(java.awt.Color.black);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         jTextArea1.setEditable(false);
-        jTextArea1.setBackground(java.awt.Color.black);
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Monospaced", 1, 16)); // NOI18N
-        jTextArea1.setForeground(java.awt.Color.white);
+        jTextArea1.setForeground(new java.awt.Color(102, 102, 102));
         jTextArea1.setRows(5);
         jTextArea1.setText("Increase X lead to right\nIncrease Y lead to down");
         jScrollPane1.setViewportView(jTextArea1);

@@ -14,9 +14,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import javafx.print.PageLayout;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -40,13 +42,13 @@ public class Directprint implements Printable {
     public static boolean Nland_port = false;  // Name tag Landescape or portairat
     public static boolean Cland_port = true;  // Critificate '''''''''''''''
     //name tag coordination
-    public static int[] barcode_coordinate = {30,240};  // x,y corrdination 
+    public static int[] barcode_coordinate = {50,240};  // x,y corrdination 
     public static int[] Nname_coordinate   = {0,230}; // name x,y
     //cirtificate coordination
     public static int[] Cname_coordinate = {560,200};
     
     public static int Cname_x   = 200;
-    public Directprint(int who) { //specify u want to print nametag or cirtification 0 for barcode 1 for certificate
+    public Directprint(int who) { //specify u want to print nametag or cirtification
         nametag_cirtificate=who;
         this.printService = PrintServiceLookup.lookupDefaultPrintService();
         
@@ -73,6 +75,7 @@ public class Directprint implements Printable {
         
          
         PrinterJob printJob = PrinterJob.getPrinterJob();
+        
         printJob.setPrintable(this);
         
         
@@ -92,13 +95,12 @@ public class Directprint implements Printable {
     }
     @Override
     public int print(Graphics g, PageFormat pf, int pageIndex) throws PrinterException {
-        
         Graphics2D g2 = (Graphics2D) g;
         g2.translate(pf.getImageableX(), pf.getImageableY());
         if(nametag_cirtificate ==0){ // he want nametag then he need barcode
             Rectangle rect = new Rectangle(Nname_coordinate[0],200,200,30);
             
-            Font myFont = new Font("Arial", Font.BOLD,14);
+            Font myFont = new Font("Impact", Font.PLAIN,16);
             //g2.setFont(myFont);
             drawCenteredString(g2, text, rect, myFont,15);
             g.drawImage(bar_image,barcode_coordinate[0],barcode_coordinate[1],null);
@@ -130,7 +132,6 @@ public class Directprint implements Printable {
         // Draw the String
         if(text.length()>25)//19
         {
-            
             String text_sub1 = text.substring(0, 25);
             if(text_sub1.charAt(24)==' ')
             {
@@ -138,7 +139,7 @@ public class Directprint implements Printable {
                 // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
                 y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
                 g.drawString(text_sub1, x, y);
-                String text_sub2 = text.substring(22, text.length());
+                String text_sub2 = text.substring(25, text.length());
                 x = rect.x + (rect.width - metrics.stringWidth(text_sub2)) / 2;
                 // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
                 y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();

@@ -3,7 +3,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
   <jar>D:\science\programmer work\Klydar\TMTPj\Klydar_List\dist\Klydar_List.jar</jar>
-  <outfile>D:\science\programmer work\Klydar\TMTPj\Klydar_List\dist\Klydar list.exe</outfile>
+  <outfile>D:\science\programmer work\Klydar\TMTPj\Klydar_List\dist\Klydar System.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -14,11 +14,15 @@
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
   <icon>D:\Icons\Ypf-Transformers-Folder-open-floder.ico</icon>
+  <singleInstance>
+    <mutexName>Klydar</mutexName>
+    <windowTitle></windowTitle>
+  </singleInstance>
   <jre>
     <path></path>
     <bundledJre64Bit>false</bundledJre64Bit>
     <bundledJreAsFallback>false</bundledJreAsFallback>
-    <minVersion>1.6.0</minVersion>
+    <minVersion>1.0.1</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
     <runtimeBits>64/32</runtimeBits>

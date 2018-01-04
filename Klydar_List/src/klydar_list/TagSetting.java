@@ -25,7 +25,7 @@ public class TagSetting extends javax.swing.JFrame {
         NY.setText(Integer.toString(Directprint.Nname_coordinate[1]) );
         TX.setText(Integer.toString(Directprint.barcode_coordinate[0]) );
         TY.setText(Integer.toString(Directprint.barcode_coordinate[1]) );
-        
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -58,21 +58,21 @@ public class TagSetting extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel1.setBackground(java.awt.Color.black);
+        jPanel1.setBackground(java.awt.Color.white);
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.setForeground(java.awt.Color.blue);
 
-        jLabel1.setForeground(java.awt.Color.white);
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setText("Format");
 
         format.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         format.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         format.setName("Format"); // NOI18N
 
-        jLabel2.setForeground(java.awt.Color.white);
+        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
         jLabel2.setText("X");
 
-        jLabel3.setForeground(java.awt.Color.white);
+        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
         jLabel3.setText("Y");
 
         NX.setText("150");
@@ -84,7 +84,7 @@ public class TagSetting extends javax.swing.JFrame {
 
         NY.setText("50");
 
-        jLabel4.setForeground(java.awt.Color.white);
+        jLabel4.setForeground(new java.awt.Color(102, 102, 102));
         jLabel4.setText("NOTE:");
 
         jScrollPane1.setBackground(java.awt.Color.black);
@@ -92,16 +92,15 @@ public class TagSetting extends javax.swing.JFrame {
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         jTextArea1.setEditable(false);
-        jTextArea1.setBackground(java.awt.Color.black);
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
-        jTextArea1.setForeground(java.awt.Color.white);
+        jTextArea1.setForeground(new java.awt.Color(102, 102, 102));
         jTextArea1.setRows(5);
         jTextArea1.setText("Increase X lead to right\nIncrease Y lead to down");
         jScrollPane1.setViewportView(jTextArea1);
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel5.setForeground(java.awt.Color.white);
+        jLabel5.setForeground(new java.awt.Color(102, 102, 102));
         jLabel5.setText("Settings");
 
         Done.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -113,7 +112,7 @@ public class TagSetting extends javax.swing.JFrame {
         });
 
         jLabel6.setBackground(java.awt.Color.white);
-        jLabel6.setForeground(java.awt.Color.white);
+        jLabel6.setForeground(new java.awt.Color(102, 102, 102));
         jLabel6.setText("Name corrdinate");
 
         TX.setText("100");
@@ -131,7 +130,7 @@ public class TagSetting extends javax.swing.JFrame {
         jLabel8.setForeground(java.awt.Color.white);
         jLabel8.setText("Y");
 
-        jLabel9.setForeground(java.awt.Color.white);
+        jLabel9.setForeground(new java.awt.Color(102, 102, 102));
         jLabel9.setText("Tag Corrdinate");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
