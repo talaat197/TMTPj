@@ -5,8 +5,13 @@
  */
 package klydar_list;
 
+import java.awt.Color;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -22,7 +27,28 @@ public class AddUser extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         ref = s;
-        name_field.requestFocus();  
+        name_field.requestFocus();
+        jLabel6.setVisible(false);
+        //add key detection
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+        .addKeyEventDispatcher(new KeyEventDispatcher() {
+      @Override
+      public boolean dispatchKeyEvent(KeyEvent e) {
+        if(e.getKeyCode()== KeyEvent.VK_F11)
+        {
+            add.setVisible(false);
+            add_print.setVisible(false);
+            jLabel6.setVisible(true);
+        }
+        else if(e.getKeyCode()== KeyEvent.VK_F12)
+        {
+            add.setVisible(true);
+            add_print.setVisible(true);
+            jLabel6.setVisible(false);
+        }
+        return false;
+      }
+        });
     }
 
     /**
@@ -47,6 +73,7 @@ public class AddUser extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         add_print = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add User");
@@ -71,6 +98,14 @@ public class AddUser extends javax.swing.JFrame {
         mob_field.setBackground(new java.awt.Color(204, 204, 204));
         mob_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         mob_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        mob_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                mob_fieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                mob_fieldFocusLost(evt);
+            }
+        });
         mob_field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mob_fieldActionPerformed(evt);
@@ -80,10 +115,26 @@ public class AddUser extends javax.swing.JFrame {
         name_field.setBackground(new java.awt.Color(204, 204, 204));
         name_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         name_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        name_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                name_fieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                name_fieldFocusLost(evt);
+            }
+        });
 
         mail_field.setBackground(new java.awt.Color(204, 204, 204));
         mail_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         mail_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        mail_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                mail_fieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                mail_fieldFocusLost(evt);
+            }
+        });
 
         add.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         add.setForeground(new java.awt.Color(51, 51, 51));
@@ -107,6 +158,14 @@ public class AddUser extends javax.swing.JFrame {
         sponsor_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         sponsor_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         sponsor_field.setText("Individual");
+        sponsor_field.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                sponsor_fieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                sponsor_fieldFocusLost(evt);
+            }
+        });
 
         jLabel4.setBackground(java.awt.Color.white);
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -123,6 +182,10 @@ public class AddUser extends javax.swing.JFrame {
                 add_printActionPerformed(evt);
             }
         });
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(26, 198, 255));
+        jLabel6.setText("Add Not Allowed , please Communicate with Staff");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -143,7 +206,7 @@ public class AddUser extends javax.swing.JFrame {
                     .addComponent(sponsor_field, javax.swing.GroupLayout.Alignment.LEADING))
                 .addGap(74, 74, 74))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(228, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -152,6 +215,10 @@ public class AddUser extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(98, 98, 98))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(238, 238, 238)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(116, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,7 +246,9 @@ public class AddUser extends javax.swing.JFrame {
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel5))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addGap(15, 15, 15)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -216,7 +285,8 @@ public class AddUser extends javax.swing.JFrame {
             String Sponsor = sponsor_field.getText();
             if(name.equals("") || Email.equals("") || Sponsor.equals(""))
             {
-                JOptionPane.showMessageDialog(null , "Please Fill All Fields :)");
+                alert_frame af = new alert_frame("Please Fill All Data");
+                af.setVisible(true);
             }//end validate
             else
             {
@@ -224,7 +294,8 @@ public class AddUser extends javax.swing.JFrame {
                     "VALUES ('', '', 0, '', '"+name+"', '', '', 1, 0, '"+mob+"', '"+Email+"', '', '', '"+Sponsor+"', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '', '', '', '')";
                 
                 ref.db.updata_query(query);
-                JOptionPane.showMessageDialog(null , "Done :)");
+                 correct_frame cf = new correct_frame("Thanks :) ");
+                cf.setVisible(true);
                 name_field.setText("");
                 mob_field.setText("");
                 mail_field.setText("");
@@ -233,11 +304,13 @@ public class AddUser extends javax.swing.JFrame {
         }//end try
         catch(NumberFormatException e)
         {
-            JOptionPane.showMessageDialog(null, "Check Mobile Number :)");
+            alert_frame af = new alert_frame("Check Mobile Number");
+            af.setVisible(true);
         }
         catch(Exception exx)
         {
-            JOptionPane.showMessageDialog(null, "InValid Data");
+            alert_frame af = new alert_frame("Invalid Data");
+            af.setVisible(true);
         }
     }//GEN-LAST:event_addActionPerformed
 
@@ -251,7 +324,8 @@ try{
             String Sponsor = sponsor_field.getText();
             if(name.equals("") || Email.equals("") || Sponsor.equals(""))
             {
-                JOptionPane.showMessageDialog(null , "Please Fill All Fields","Empty fields",JOptionPane.WARNING_MESSAGE);
+                alert_frame af = new alert_frame("Please Fill All Data");
+                af.setVisible(true);
             }//end validate
             else
             {
@@ -267,7 +341,8 @@ try{
                 Directprint print = new Directprint(0);
                 print.barcode_generate(Integer.toString(id));
                 print.printString(name);
-                JOptionPane.showMessageDialog(null , "Done 🙂");
+                correct_frame cf = new correct_frame("Thanks :) ");
+                cf.setVisible(true);
                 name_field.setText("");
                 mob_field.setText("");
                 mail_field.setText("");
@@ -276,13 +351,55 @@ try{
         }//end try
         catch(NumberFormatException e)
         {
-            JOptionPane.showMessageDialog(null,"Check Mobile Number","Invalid data",JOptionPane.WARNING_MESSAGE);
+            alert_frame af = new alert_frame("Check Mobile Number");
+            af.setVisible(true);
         }
         catch(Exception exx)
         {
-            JOptionPane.showMessageDialog(null, "Invalid Data "+exx,"Invalid User Data",JOptionPane.WARNING_MESSAGE);
+            alert_frame af = new alert_frame("Invalid Data");
+            af.setVisible(true);
         }
     }//GEN-LAST:event_add_printActionPerformed
+
+    private void name_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_name_fieldFocusGained
+        // TODO add your handling code here:
+        name_field.setBorder(new LineBorder(Data.white_blue , 2));
+    }//GEN-LAST:event_name_fieldFocusGained
+
+    private void mob_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mob_fieldFocusGained
+        // TODO add your handling code here:
+        mob_field.setBorder(new LineBorder(Data.white_blue , 2));
+    }//GEN-LAST:event_mob_fieldFocusGained
+
+    private void mail_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mail_fieldFocusGained
+        // TODO add your handling code here:
+        mail_field.setBorder(new LineBorder(Data.white_blue , 2));
+    }//GEN-LAST:event_mail_fieldFocusGained
+
+    private void sponsor_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sponsor_fieldFocusGained
+        // TODO add your handling code here:
+        sponsor_field.setBorder(new LineBorder(Data.white_blue , 2));
+    }//GEN-LAST:event_sponsor_fieldFocusGained
+
+    private void name_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_name_fieldFocusLost
+        // TODO add your handling code here:
+        name_field.setBorder(new LineBorder(Color.BLACK , 1));
+    }//GEN-LAST:event_name_fieldFocusLost
+
+    private void mob_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mob_fieldFocusLost
+        // TODO add your handling code here:
+        mob_field.setBorder(new LineBorder(Color.BLACK , 1));
+    }//GEN-LAST:event_mob_fieldFocusLost
+
+    private void mail_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mail_fieldFocusLost
+        // TODO add your handling code here:
+        mail_field.setBorder(new LineBorder(Color.BLACK , 1));
+    }//GEN-LAST:event_mail_fieldFocusLost
+
+    private void sponsor_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sponsor_fieldFocusLost
+        // TODO add your handling code here:
+        sponsor_field.setBorder(new LineBorder(Color.BLACK , 1));
+    }//GEN-LAST:event_sponsor_fieldFocusLost
 
     /**
      * @param args the command line arguments
@@ -297,6 +414,7 @@ try{
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField mail_field;
     private javax.swing.JTextField mob_field;

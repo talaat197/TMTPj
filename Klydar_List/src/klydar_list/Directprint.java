@@ -48,6 +48,8 @@ public class Directprint implements Printable {
     public static int[] Cname_coordinate = {560,200};
     
     public static int Cname_x   = 200;
+    //number of charcater before take new line in nametag
+    public static int newline = 25;
     public Directprint(int who) { //specify u want to print nametag or cirtification
         nametag_cirtificate=who;
         this.printService = PrintServiceLookup.lookupDefaultPrintService();
@@ -130,16 +132,17 @@ public class Directprint implements Printable {
         // Set the font
         g.setFont(font);
         // Draw the String
-        if(text.length()>25)//19
+        int newline_no = newline;
+        if(text.length()>newline_no)//25
         {
-            String text_sub1 = text.substring(0, 25);
-            if(text_sub1.charAt(24)==' ')
+            String text_sub1 = text.substring(0, newline_no);
+            if(text_sub1.charAt(newline_no-1)==' ')
             {
                 x = rect.x + (rect.width - metrics.stringWidth(text_sub1)) / 2;
                 // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
                 y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
                 g.drawString(text_sub1, x, y);
-                String text_sub2 = text.substring(25, text.length());
+                String text_sub2 = text.substring(newline_no, text.length());
                 x = rect.x + (rect.width - metrics.stringWidth(text_sub2)) / 2;
                 // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
                 y = rect.y + ((rect.height - metrics.getHeight()) / 2) + metrics.getAscent();
@@ -148,7 +151,7 @@ public class Directprint implements Printable {
             else
             {
                 String text_sub2="";
-                for(int i=24 ; i>=0 ; i--)
+                for(int i=newline_no-1 ; i>=0 ; i--)
                 {
                     if(text_sub1.charAt(i)==' ')
                     {
@@ -191,7 +194,7 @@ public class Directprint implements Printable {
     public void barcode_generate(String bar){
          try
         {
-                
+         
                 Code39 barcode = new Code39();
                 barcode.setData(bar);
                 barcode.setX(1);

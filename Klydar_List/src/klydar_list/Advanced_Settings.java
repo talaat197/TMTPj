@@ -5,6 +5,8 @@
  */
 package klydar_list;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Talaat
@@ -14,8 +16,20 @@ public class Advanced_Settings extends javax.swing.JFrame {
     /**
      * Creates new form Advanced_Settings
      */
-    public Advanced_Settings() {
+    public static boolean directcon = false;
+    Database db;
+    public Advanced_Settings(Database d) {
+        this.db = d;
         initComponents();
+        cloudip.setText(Database.CLOUD_info[0]);
+        clouddbname.setText(Database.CLOUD_info[1]);
+        username.setText(Database.CLOUD_info[2]);
+        password.setText(Database.CLOUD_info[3]);
+        LanIP.setText(Database.LAN_info[0]);
+        Landbname.setText(Database.LAN_info[1]);
+        if(directcon){
+         directconn.doClick();}
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -29,32 +43,32 @@ public class Advanced_Settings extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         cloudIP = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        cloudip = new javax.swing.JTextField();
         cloudIP1 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        clouddbname = new javax.swing.JTextField();
         cloudIP2 = new javax.swing.JLabel();
         cloudIP3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        username = new javax.swing.JTextField();
+        password = new javax.swing.JTextField();
         cloudIP4 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        LanIP = new javax.swing.JTextField();
+        Landbname = new javax.swing.JTextField();
         cloudIP5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jRadioButton1 = new javax.swing.JRadioButton();
+        Save = new javax.swing.JButton();
+        directconn = new javax.swing.JRadioButton();
         cloudIP6 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         cloudIP.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         cloudIP.setText("Cloud IP");
 
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudip.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         cloudIP1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         cloudIP1.setText("Cloud Database name");
 
-        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        clouddbname.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         cloudIP2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         cloudIP2.setText("Cloud Username");
@@ -62,24 +76,34 @@ public class Advanced_Settings extends javax.swing.JFrame {
         cloudIP3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         cloudIP3.setText("Cloud Password");
 
-        jTextField3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        username.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
-        jTextField4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        password.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         cloudIP4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         cloudIP4.setText("Lan IP");
 
-        jTextField5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        LanIP.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
-        jTextField6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        Landbname.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        Landbname.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LandbnameActionPerformed(evt);
+            }
+        });
 
         cloudIP5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         cloudIP5.setText("Lan Database name");
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
-        jButton1.setText("Save");
+        Save.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        Save.setText("Save");
+        Save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveActionPerformed(evt);
+            }
+        });
 
-        jRadioButton1.setText("Direct connection");
+        directconn.setText("Direct connection");
 
         cloudIP6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         cloudIP6.setText("Autonomuous Printing");
@@ -98,28 +122,32 @@ public class Advanced_Settings extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(136, 136, 136)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Save, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cloudip)
+                                    .addComponent(username))
+                                .addGap(18, 18, 18))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(LanIP)
+                                .addGap(18, 18, 18)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cloudIP1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cloudIP3, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cloudIP5, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(115, 115, 115))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                            .addComponent(clouddbname)
+                            .addComponent(Landbname))
+                        .addGap(85, 85, 85))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(cloudIP6, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(directconn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(289, 289, 289))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -128,36 +156,31 @@ public class Advanced_Settings extends javax.swing.JFrame {
                 .addGap(41, 41, 41)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cloudIP, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudip, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cloudIP1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(clouddbname, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cloudIP2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cloudIP3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(65, 65, 65)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cloudIP4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cloudIP5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(47, 47, 47)
+                .addGap(57, 57, 57)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudIP5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Landbname, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(LanIP, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudIP4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(55, 55, 55)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(directconn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cloudIP6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(Save)
                 .addGap(30, 30, 30))
         );
 
-        jButton1.getAccessibleContext().setAccessibleName("save");
+        Save.getAccessibleContext().setAccessibleName("save");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -173,42 +196,40 @@ public class Advanced_Settings extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
+        // TODO add your handling code here:
+        try{
+            String direct;
+            Database.CLOUD_info[0] = cloudip.getText();
+            Database.CLOUD_info[1] = clouddbname.getText();
+            Database.CLOUD_info[2] = username.getText();
+            Database.CLOUD_info[3] = password.getText();
+            Database.LAN_info[0] = LanIP.getText();
+            Database.LAN_info[1] = Landbname.getText();
+            if(directconn.isSelected()) {directcon =true; direct="yes";}
+            else {directcon = false; direct = "no";}
+            //insert settings in database
+            String query = "update admin_setting set cloud_ip ='"+Database.CLOUD_info[0]+"', cloud_db='"+Database.CLOUD_info[1]+"',cloud_username='"+Database.CLOUD_info[2]+"',cloud_password='"+Database.CLOUD_info[3]+"',lan_ip='"+Database.LAN_info[0]+"',lan_db='"+Database.LAN_info[1]+"',direct_conn='"+direct+"' where id_setting=1";
+            db.updata_query(query);
+            this.dispose();
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this, e+" Here");
+        }
+        
+    }//GEN-LAST:event_SaveActionPerformed
+
+    private void LandbnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LandbnameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_LandbnameActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Advanced_Settings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Advanced_Settings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Advanced_Settings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Advanced_Settings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Advanced_Settings().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField LanIP;
+    private javax.swing.JTextField Landbname;
+    private javax.swing.JButton Save;
     private javax.swing.JLabel cloudIP;
     private javax.swing.JLabel cloudIP1;
     private javax.swing.JLabel cloudIP2;
@@ -216,14 +237,11 @@ public class Advanced_Settings extends javax.swing.JFrame {
     private javax.swing.JLabel cloudIP4;
     private javax.swing.JLabel cloudIP5;
     private javax.swing.JLabel cloudIP6;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField clouddbname;
+    private javax.swing.JTextField cloudip;
+    private javax.swing.JRadioButton directconn;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField password;
+    private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 }

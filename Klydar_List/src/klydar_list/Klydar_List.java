@@ -25,8 +25,9 @@ public class Klydar_List {
     public static void main(String[] args)  {
         // TODO code application logic here
         /*Database obj = new Database();
-        String query = ("insert into userdata (id,name, status, type, sponsor, AFF, mobile, email) VALUES(5,'talaat', 0,'committee', 'sponsor','hey', 123, 'maise_mardon@hotmail.com')");
-        obj.updata_query(query);  */
+        String query = ("create table admin_setting (column_setting varchar(300) , id_setting int)");
+        obj.updata_query(query);
+        obj.updata_query("insert into `admin_setting` (`column_setting` , `id_setting`) values ('',1)");*/
         try
         {
             Data s = new Data();

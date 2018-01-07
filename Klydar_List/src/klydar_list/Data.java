@@ -33,6 +33,7 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.web.WebErrorEvent;
 import javax.imageio.ImageIO;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -45,6 +46,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -68,26 +70,65 @@ public class Data extends javax.swing.JFrame{
      public Database db;
      ResultSet global_data;
      private byte  first_time = 0;
+     static Color white_blue = new Color(26, 198, 255);
+     //Color white_blue = new Color(129, 216, 250);
+     
     /**
      * Creates new form Data
      */
     public Data() {
         try{
-            
-         db = new Database();
+        set_theme();
+        db = new Database();
+        set_table_columns();
         initComponents();
         display_data();
-        set_style();
+        //set_style();
         insert_buttons();
         search.requestFocus();
         setLocationRelativeTo(null);
+         
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(null, e);
         }
         
     }//END constructor
-
+    public void set_table_columns()
+    {
+        try
+        {
+            ResultSet ad_s=db.select_query("select * from admin_setting where id_setting='1'");
+            if(ad_s.next())
+            {
+                Database.CLOUD_info[0] = ad_s.getString("cloud_ip");
+                Database.CLOUD_info[1] = ad_s.getString("cloud_db");
+                Database.CLOUD_info[2] = ad_s.getString("cloud_username");
+                Database.CLOUD_info[3] = ad_s.getString("cloud_password");
+                Database.LAN_info[0] = ad_s.getString("lan_ip");
+                Database.LAN_info[1] = ad_s.getString("lan_db");
+                String direct = ad_s.getString("direct_conn");
+                if (direct.equals("no")) Advanced_Settings.directcon = false;
+                else Advanced_Settings.directcon = true;
+                
+                String setting = ad_s.getString("column_setting");
+                DatabaseConstants.all_data=setting;
+            }
+        }
+            catch(Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+    public void set_theme()
+    {
+        UIManager.put("Menu.selectionBackground",
+             new javax.swing.plaf.ColorUIResource(white_blue));
+        UIManager.put("MenuItem.selectionBackground",
+             new javax.swing.plaf.ColorUIResource(white_blue));
+        UIManager.put("ComboBox.selectionBackground",
+             new javax.swing.plaf.ColorUIResource(white_blue));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -109,26 +150,46 @@ public class Data extends javax.swing.JFrame{
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Tagsettings = new javax.swing.JMenu();
-        certificatesettings = new javax.swing.JMenu();
+        AdvSett = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
         Switch = new javax.swing.JMenu();
+        online = new javax.swing.JMenuItem();
+        offline = new javax.swing.JMenuItem();
+        lan = new javax.swing.JMenuItem();
+        certificatesettings = new javax.swing.JMenu();
+        certificatesettings1 = new javax.swing.JMenu();
+        certificatesettings2 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
-        lan_connection = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Data of Users");
+        setTitle("Users Data");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 20));
         jPanel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
-        jScrollPane1.setBackground(new java.awt.Color(204, 204, 204));
+        jScrollPane1.setBackground(new java.awt.Color(129, 212, 250));
         jScrollPane1.setForeground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setToolTipText("");
 
         search.setBackground(new java.awt.Color(242, 242, 242));
         search.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         search.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         search.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        search.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                searchFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                searchFocusLost(evt);
+            }
+        });
+        search.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchMouseClicked(evt);
+            }
+        });
         search.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchActionPerformed(evt);
@@ -154,6 +215,11 @@ public class Data extends javax.swing.JFrame{
         filter_type.setForeground(new java.awt.Color(51, 51, 51));
         filter_type.setMaximumRowCount(1000);
         filter_type.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Type", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14), new java.awt.Color(51, 51, 51))); // NOI18N
+        filter_type.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                filter_typeFocusGained(evt);
+            }
+        });
         filter_type.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filter_typeActionPerformed(evt);
@@ -191,11 +257,16 @@ public class Data extends javax.swing.JFrame{
         });
 
         print_cert.setBackground(new java.awt.Color(242, 242, 242));
-        print_cert.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        print_cert.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         print_cert.setForeground(new java.awt.Color(102, 102, 102));
         print_cert.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         print_cert.setText("Certificate ID");
         print_cert.setToolTipText("Print Certificate");
+        print_cert.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                print_certFocusLost(evt);
+            }
+        });
         print_cert.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 print_certMouseReleased(evt);
@@ -221,7 +292,7 @@ public class Data extends javax.swing.JFrame{
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(print_cert, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 252, Short.MAX_VALUE)
                         .addComponent(filter_type, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(filter_sponsor, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -249,7 +320,7 @@ public class Data extends javax.swing.JFrame{
                     .addComponent(Crtificate, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(print_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -260,7 +331,7 @@ public class Data extends javax.swing.JFrame{
                 .addGap(53, 53, 53))
         );
 
-        jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
+        jMenuBar1.setBackground(new java.awt.Color(251, 251, 251));
         jMenuBar1.setForeground(new java.awt.Color(204, 204, 204));
         jMenuBar1.setToolTipText("");
 
@@ -268,7 +339,23 @@ public class Data extends javax.swing.JFrame{
         jMenu1.setForeground(new java.awt.Color(102, 102, 102));
         jMenu1.setText("Add New");
         jMenu1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jMenu1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jMenu1MouseMoved(evt);
+            }
+        });
+        jMenu1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jMenu1FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jMenu1FocusLost(evt);
+            }
+        });
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jMenu1MouseExited(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jMenu1MousePressed(evt);
             }
@@ -277,30 +364,65 @@ public class Data extends javax.swing.JFrame{
 
         Tagsettings.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
         Tagsettings.setForeground(new java.awt.Color(102, 102, 102));
-        Tagsettings.setText("Tag Settings");
+        Tagsettings.setText("Setting");
         Tagsettings.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Tagsettings.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                TagsettingsMouseMoved(evt);
+            }
+        });
         Tagsettings.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 TagsettingsMousePressed(evt);
             }
-        });
-        jMenuBar1.add(Tagsettings);
-
-        certificatesettings.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        certificatesettings.setForeground(new java.awt.Color(102, 102, 102));
-        certificatesettings.setText("Certificate Settings");
-        certificatesettings.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        certificatesettings.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                certificatesettingsMousePressed(evt);
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                TagsettingsMouseReleased(evt);
             }
         });
-        jMenuBar1.add(certificatesettings);
+
+        AdvSett.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        AdvSett.setForeground(new java.awt.Color(102, 102, 102));
+        AdvSett.setText("Advanced Setting");
+        AdvSett.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        AdvSett.setName(""); // NOI18N
+        AdvSett.setPreferredSize(new java.awt.Dimension(300, 42));
+        AdvSett.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                AdvSettMouseMoved(evt);
+            }
+        });
+        AdvSett.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                AdvSettMousePressed(evt);
+            }
+        });
+        Tagsettings.add(AdvSett);
+
+        jMenu3.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        jMenu3.setForeground(new java.awt.Color(102, 102, 102));
+        jMenu3.setText("Admin Setting");
+        jMenu3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jMenu3.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jMenu3MouseMoved(evt);
+            }
+        });
+        jMenu3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenu3MousePressed(evt);
+            }
+        });
+        Tagsettings.add(jMenu3);
 
         Switch.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
         Switch.setForeground(new java.awt.Color(102, 102, 102));
-        Switch.setText("ONLINE");
+        Switch.setText("Connection Mode");
         Switch.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Switch.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                SwitchMouseMoved(evt);
+            }
+        });
         Switch.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 SwitchMousePressed(evt);
@@ -309,12 +431,108 @@ public class Data extends javax.swing.JFrame{
                 SwitchMouseReleased(evt);
             }
         });
-        jMenuBar1.add(Switch);
+
+        online.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        online.setForeground(new java.awt.Color(102, 102, 102));
+        online.setText("Online");
+        online.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                onlineMousePressed(evt);
+            }
+        });
+        online.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onlineActionPerformed(evt);
+            }
+        });
+        Switch.add(online);
+
+        offline.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        offline.setForeground(new java.awt.Color(102, 102, 102));
+        offline.setText("Local");
+        offline.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                offlineMousePressed(evt);
+            }
+        });
+        Switch.add(offline);
+
+        lan.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lan.setForeground(new java.awt.Color(102, 102, 102));
+        lan.setText("Network");
+        lan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                lanMousePressed(evt);
+            }
+        });
+        lan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lanActionPerformed(evt);
+            }
+        });
+        Switch.add(lan);
+
+        Tagsettings.add(Switch);
+
+        certificatesettings.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        certificatesettings.setForeground(new java.awt.Color(102, 102, 102));
+        certificatesettings.setText("Certificate Settings");
+        certificatesettings.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        certificatesettings.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                certificatesettingsMouseMoved(evt);
+            }
+        });
+        certificatesettings.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                certificatesettingsMousePressed(evt);
+            }
+        });
+        Tagsettings.add(certificatesettings);
+
+        certificatesettings1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        certificatesettings1.setForeground(new java.awt.Color(102, 102, 102));
+        certificatesettings1.setText("Tag Setting");
+        certificatesettings1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        certificatesettings1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                certificatesettings1MouseMoved(evt);
+            }
+        });
+        certificatesettings1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                certificatesettings1MousePressed(evt);
+            }
+        });
+        Tagsettings.add(certificatesettings1);
+
+        certificatesettings2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        certificatesettings2.setForeground(new java.awt.Color(102, 102, 102));
+        certificatesettings2.setText("Attendance");
+        certificatesettings2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        certificatesettings2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                certificatesettings2MouseMoved(evt);
+            }
+        });
+        certificatesettings2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                certificatesettings2MousePressed(evt);
+            }
+        });
+        Tagsettings.add(certificatesettings2);
+
+        jMenuBar1.add(Tagsettings);
 
         jMenu2.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
         jMenu2.setForeground(new java.awt.Color(102, 102, 102));
         jMenu2.setText("Refresh");
         jMenu2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jMenu2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jMenu2MouseMoved(evt);
+            }
+        });
         jMenu2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jMenu2MousePressed(evt);
@@ -322,17 +540,9 @@ public class Data extends javax.swing.JFrame{
         });
         jMenuBar1.add(jMenu2);
 
-        jMenu4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 100, 1, 1));
+        jMenu4.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 50, 1, 1));
         jMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/loading.gif"))); // NOI18N
         jMenuBar1.add(jMenu4);
-
-        lan_connection.setText("LAN Connection");
-        lan_connection.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                lan_connectionMousePressed(evt);
-            }
-        });
-        jMenuBar1.add(lan_connection);
 
         setJMenuBar(jMenuBar1);
 
@@ -355,7 +565,8 @@ public class Data extends javax.swing.JFrame{
        try{
             if(Userdata.getSelectedRowCount()>1 || Userdata.getSelectedRowCount()==0)
             {
-                JOptionPane.showMessageDialog(null,"Choose only one user");
+                alert_frame af = new alert_frame("Choose Only One User");
+                af.setVisible(true);
             }
             else
             {
@@ -367,7 +578,8 @@ public class Data extends javax.swing.JFrame{
             lt.printString(name);
             db.updata_query(DatabaseConstants.set_attend+id+"'");
             Userdata.setValueAt("ON",rownum,2);
-            JOptionPane.showMessageDialog(null, "Done Printing");
+            correct_frame af = new correct_frame("Done Printing");
+            af.setVisible(true);
             }//end else
         }catch(Exception e ){
             JOptionPane.showMessageDialog(null, e);
@@ -387,61 +599,32 @@ public class Data extends javax.swing.JFrame{
                         {
                             if(Userdata.getSelectedRowCount()==1)
                             {
-                                String type="";
                                 String sponsor="";
                                 String AFF="";
                                 String name="";
                                 int selected_row=Userdata.getSelectedRow();
                                 int id = Integer.parseInt(Userdata.getValueAt(selected_row,0).toString()); 
-                                if(Userdata.getSelectedColumn()==4)//type field
+                                String column_name = Userdata.getColumnName(Userdata.getSelectedColumn());
+                                column_name=column_name.toLowerCase();
+                                String data_updated=Userdata.getValueAt(selected_row, Userdata.getSelectedColumn()).toString();
+                                if(column_name.equals("id"))
                                 {
-                                    type = Userdata.getValueAt(selected_row, 4).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","type",type,id));
+                                    alert_frame af = new alert_frame("ID Update Not Avaliable");
+                                    af.setVisible(true);
                                 }
-                                else if (Userdata.getSelectedColumn()==5)//sponsor field
-                                {
-                                    sponsor = Userdata.getValueAt(selected_row, 5).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","sponsor",sponsor,id));
-                                }
-                                else if (Userdata.getSelectedColumn()==6)//AFF field
-                                {
-                                     AFF = Userdata.getValueAt(selected_row, 6).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","mobile",AFF,id));
-                                }
-                                else if (Userdata.getSelectedColumn()==7)//AFF field
-                                {
-                                     AFF = Userdata.getValueAt(selected_row, 7).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","Profession",AFF,id));
-                                }
-                                else if (Userdata.getSelectedColumn()==8)//Name Field
-                                {
-                                    name = Userdata.getValueAt(selected_row,8).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","Institution",name,id));
-                                }
-                                else if (Userdata.getSelectedColumn()==9)//Name Field
-                                {
-                                    name = Userdata.getValueAt(selected_row,9).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","country",name,id));
-                                }
-                                else if (Userdata.getSelectedColumn()==1)//Name Field
-                                {
-                                    name = Userdata.getValueAt(selected_row, 1).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","name",name,id));
-                                }
-                                else if (Userdata.getSelectedColumn()==3)//Name Field
-                                {
-                                    name = Userdata.getValueAt(selected_row, 3).toString();
-                                    db.updata_query(DatabaseConstants.Update_table("lists","email",name,id));
-                                }
+                                else
+                                    db.updata_query(DatabaseConstants.Update_table("lists",column_name,data_updated,id));
                             }//if select one row
                             else
                             {
-                                JOptionPane.showMessageDialog(null, "Select One Customer Only");
+                                alert_frame af = new alert_frame("Select One");
+                                af.setVisible(true);
                             }//if select more one row
                             }//end try
                             catch(Exception ex)
                             {
-                                JOptionPane.showMessageDialog(null, "Invalid Data");
+                                alert_frame af = new alert_frame("Invalid Data");
+                                af.setVisible(true);
                             }//end catch
                                     }//end function
                     
@@ -510,7 +693,7 @@ public class Data extends javax.swing.JFrame{
 
     private void jMenu2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MousePressed
         // TODO add your handling code here:
-        filter_sponsor.removeAllItems();
+         filter_sponsor.removeAllItems();
         filter_type.removeAllItems();
         display_data();
         insert_buttons();
@@ -524,22 +707,19 @@ public class Data extends javax.swing.JFrame{
 
     private void SwitchMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SwitchMousePressed
         // TODO add your handling code here:    
-        
-        
-        if(Database.iscloud==false)
-        {
-            Switch.setText("ONLINE");
-            db.switch_to_local(1);//switch to global
-        }
-        else
-        {
-            Switch.setText("OFFLINE");
-            db.switch_to_local(0); // switch to local
-        }
+        /*db.switch_to_local();
         filter_sponsor.removeAllItems();
         filter_type.removeAllItems();
         display_data();
         insert_buttons();
+        if(Database.iscloud==true)
+        {
+            Switch.setText("ONLINE");
+        }
+        else
+        {
+            Switch.setText("OFFLINE");
+        }*/
     }//GEN-LAST:event_SwitchMousePressed
 
     private void CrtificateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrtificateActionPerformed
@@ -547,7 +727,8 @@ public class Data extends javax.swing.JFrame{
         try{
           if(Userdata.getSelectedRowCount()>1 || Userdata.getSelectedRowCount()==0)
             {
-                JOptionPane.showMessageDialog(null,"choose only one user");
+                alert_frame af = new alert_frame("Choose One");
+                af.setVisible(true);
             }
             else
             {
@@ -576,7 +757,8 @@ public class Data extends javax.swing.JFrame{
             name = myName.toString();
             Directprint lt = new Directprint(1); // Name tag 
             lt.printString(name);
-            JOptionPane.showMessageDialog(null, "Done Printing");
+            correct_frame af = new correct_frame("Done Printing");
+            af.setVisible(true);
             }//end else
           
         }catch(Exception e ){
@@ -586,8 +768,6 @@ public class Data extends javax.swing.JFrame{
 
     private void TagsettingsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TagsettingsMousePressed
         // TODO add your handling code here:
-        TagSetting obj = new TagSetting();
-        obj.setVisible(true);
     }//GEN-LAST:event_TagsettingsMousePressed
 
     private void certificatesettingsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_certificatesettingsMousePressed
@@ -606,7 +786,11 @@ public class Data extends javax.swing.JFrame{
 
     private void print_certMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_print_certMouseReleased
         // TODO add your handling code here:
+        clear_selection();
         print_cert.setText("");
+        print_cert.setForeground(Color.BLACK);
+        print_cert.setFont(new Font("Tahoma" , Font.BOLD , 20));
+        print_cert.setBorder(new LineBorder(white_blue , 2));
     }//GEN-LAST:event_print_certMouseReleased
 
     private void print_certKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_print_certKeyReleased
@@ -619,7 +803,7 @@ public class Data extends javax.swing.JFrame{
            //No Thing 
         }
         else{
-        if(Advanced_Settings.directcon = false){// get data from table   
+         if(Advanced_Settings.directcon == false){   
          for (int k=0 ; k<Userdata.getRowCount() ; k++)
          {
              if(Userdata.getValueAt(k, 0).toString().equals(id))
@@ -627,12 +811,13 @@ public class Data extends javax.swing.JFrame{
                  name = Userdata.getValueAt(k, 1).toString();
              }
          }//end searching
-        }//end if 
-        else{//get data from the database directly
-            String query= "select name from lists where id ="+id+"";
-            ResultSet rs = db.select_query(query);
-            name = rs.getString("name");
-        }
+         }// end if 
+         else{
+             String query = "select name from lists where id="+id+"";
+             ResultSet rs = db.select_query(query);
+             rs.next();
+             name = rs.getString("name");
+         }
         StringBuilder myName = new StringBuilder(name);
         for(int i=0 ; i<name.length() ; i++)
         {
@@ -669,16 +854,21 @@ public class Data extends javax.swing.JFrame{
         // TODO add your handling code here:
         try
         {
+            Font s_font = new Font("Tahoma", Font.BOLD, 24);
+            search.setFont(s_font);
             String data = search.getText();
             Userdata = new JTable(buildTableModel(global_data));
             global_data.beforeFirst();
-
+            int mobile_index = getColumnIndex(Userdata,"mobile"); //get mobile colum index to search in it 
+            
             set_style();
             for(int i=0 ; i<Userdata.getRowCount(); i++)
             {
+                
                 if(Userdata.getValueAt(i,1).toString().toLowerCase().contains(data.toLowerCase()));
                 else if (Userdata.getValueAt(i, 0).toString().toLowerCase().contains(data.toLowerCase()));
-                else if(Userdata.getValueAt(i,6).toString().toLowerCase().contains(data.toLowerCase()));
+                // mobile index = -1 mean mobile is not in the table colums
+                else if(mobile_index !=1 && Userdata.getValueAt(i,mobile_index).toString().toLowerCase().contains(data.toLowerCase()));
                 else
                 {
                     TableModel model = Userdata.getModel();
@@ -703,20 +893,201 @@ public class Data extends javax.swing.JFrame{
             }
         }
     }//GEN-LAST:event_searchKeyReleased
-
+    private int getColumnIndex (JTable table, String header) {
+    for (int i=0; i < table.getColumnCount(); i++) {
+        if (table.getColumnName(i).equals(header)) return i;
+    }
+    return -1;
+}
     private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchActionPerformed
 
-    private void lan_connectionMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lan_connectionMousePressed
+    private void searchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchMouseClicked
         // TODO add your handling code here:
-        db.switch_to_local(2);//switch to lan 
-        filter_sponsor.removeAllItems();
-        filter_type.removeAllItems();
+
+    }//GEN-LAST:event_searchMouseClicked
+
+    private void searchFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchFocusLost
+        // TODO add your handling code here:
+        search.setFont(new Font("Tahoma" , Font.PLAIN , 14));
+        search.setForeground(new Color(102,102,102));
+        search.setText("Name , Phone , ID");
+        search.setBorder(new LineBorder(Color.BLACK , 1));
+    }//GEN-LAST:event_searchFocusLost
+
+    private void searchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchFocusGained
+        // TODO add your handling code here:
+        clear_selection();
+        search.setText("");
+        search.setForeground(Color.BLACK);
+        search.setFont(new Font("Tahoma" , Font.BOLD , 24));
+        search.setBorder(new LineBorder(white_blue , 2));
+    }//GEN-LAST:event_searchFocusGained
+
+    private void jMenu1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu1MouseExited
+    
+    private void jMenu1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jMenu1FocusGained
+        // TODO add your handling code here
+    }//GEN-LAST:event_jMenu1FocusGained
+
+    private void jMenu1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jMenu1FocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenu1FocusLost
+
+    private void jMenu1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseMoved
+        // TODO add your handling code here:
+       clear_selection();
+       jMenu1.setSelected(true);
+    }//GEN-LAST:event_jMenu1MouseMoved
+
+    private void TagsettingsMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TagsettingsMouseMoved
+        // TODO add your handling code here:
+        clear_selection();
+       Tagsettings.setSelected(true);
+    }//GEN-LAST:event_TagsettingsMouseMoved
+
+    private void certificatesettingsMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_certificatesettingsMouseMoved
+        // TODO add your handling code here:
+        clear_selection();
+       certificatesettings.setSelected(true);
+    }//GEN-LAST:event_certificatesettingsMouseMoved
+
+    private void SwitchMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SwitchMouseMoved
+        // TODO add your handling code here:
+        clear_selection();
+       Switch.setSelected(true);
+    }//GEN-LAST:event_SwitchMouseMoved
+
+    private void jMenu2MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseMoved
+        // TODO add your handling code here:
+        clear_selection();
+       jMenu2.setSelected(true);
+    }//GEN-LAST:event_jMenu2MouseMoved
+
+    private void print_certFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_print_certFocusLost
+        // TODO add your handling code here:
+        print_cert.setForeground(new Color(102,102,102));
+        print_cert.setBorder(new LineBorder(Color.BLACK , 1));
+        print_cert.setFont(new Font("Tahoma", Font.PLAIN , 14));
+        print_cert.setText("Certificate ID");
+    }//GEN-LAST:event_print_certFocusLost
+
+    private void filter_typeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_filter_typeFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filter_typeFocusGained
+
+    private void jMenu3MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseMoved
+        // TODO add your handling code here:
+        clear_selection();
+       jMenu3.setSelected(true);
+    }//GEN-LAST:event_jMenu3MouseMoved
+
+    private void jMenu3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MousePressed
+        // TODO add your handling code here:
+        try
+        {
+            Admin_Setting s = new Admin_Setting(this);
+            s.setVisible(true);
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }//GEN-LAST:event_jMenu3MousePressed
+
+    private void lanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lanActionPerformed
+
+    private void onlineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onlineActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_onlineActionPerformed
+
+    private void onlineMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_onlineMousePressed
+        // TODO add your handling code here:
+        db.switch_to_local(1);
         display_data();
+        //set_style();
         insert_buttons();
         
-    }//GEN-LAST:event_lan_connectionMousePressed
+    }//GEN-LAST:event_onlineMousePressed
+
+    private void offlineMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_offlineMousePressed
+        // TODO add your handling code here:
+        db.switch_to_local(0);
+        display_data();
+        //set_style();
+        insert_buttons();
+    }//GEN-LAST:event_offlineMousePressed
+
+    private void lanMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lanMousePressed
+        // TODO add your handling code here:
+        db.switch_to_local(2);
+        display_data();
+        //set_style();
+        insert_buttons();
+    }//GEN-LAST:event_lanMousePressed
+
+    private void AdvSettMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AdvSettMousePressed
+        // TODO add your handling code here:
+        JPasswordField pwd = new JPasswordField(10);
+        int action = JOptionPane.showConfirmDialog(null, pwd,"Enter Password",JOptionPane.OK_CANCEL_OPTION);
+        if(action < 0 || pwd.getText().equals(""));//enter Exit X do nothing
+        else{
+            if(pwd.getText().equals("0000")){
+                Advanced_Settings obj = new Advanced_Settings(db);
+                obj.setVisible(true);}//end compare
+            else {
+                alert_frame warn = new alert_frame("Wrong Password");
+                warn.setVisible(true);
+                }
+            }// end else
+    }//GEN-LAST:event_AdvSettMousePressed
+
+    private void AdvSettMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AdvSettMouseMoved
+        // TODO add your handling code here:
+        clear_selection();
+        AdvSett.setSelected(true);
+        
+    }//GEN-LAST:event_AdvSettMouseMoved
+
+    private void TagsettingsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TagsettingsMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TagsettingsMouseReleased
+
+    private void certificatesettings1MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_certificatesettings1MouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_certificatesettings1MouseMoved
+
+    private void certificatesettings1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_certificatesettings1MousePressed
+        // TODO add your handling code here:
+        TagSetting ts = new  TagSetting();
+        ts.setVisible(true);
+    }//GEN-LAST:event_certificatesettings1MousePressed
+
+    private void certificatesettings2MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_certificatesettings2MouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_certificatesettings2MouseMoved
+
+    private void certificatesettings2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_certificatesettings2MousePressed
+        // TODO add your handling code here:
+       attendance_percent ts = new attendance_percent(this);
+       ts.setVisible(true);
+    }//GEN-LAST:event_certificatesettings2MousePressed
+     
+       public void clear_selection()
+       {
+           jMenu1.setSelected(false);
+           jMenu2.setSelected(false);
+           jMenu3.setSelected(false);
+           Switch.setSelected(false);
+           Tagsettings.setSelected(false);
+           certificatesettings.setSelected(false);
+           AdvSett.setSelected(false);
+       }
     public void display_data()
     {    
         try
@@ -798,7 +1169,7 @@ public class Data extends javax.swing.JFrame{
         Userdata.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
         Userdata.getColumnModel().getColumn(3).setMinWidth(300);
         Userdata.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
-        for(int i=4 ; i<10 ; i++)
+        for(int i=4 ; i<Userdata.getColumnCount() ; i++)
         {
             Userdata.getColumnModel().getColumn(i).setMinWidth(220);
              Userdata.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
@@ -809,7 +1180,6 @@ public class Data extends javax.swing.JFrame{
         Userdata.setRowHeight(40);
         Userdata.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 25));
         JTableHeader header = Userdata.getTableHeader();
-        Color white_blue = new Color(26, 198, 255);
         Color white_gray_selection = new Color(217, 217, 217);
         Color ztone = new Color(0,153,153);
         header.setBackground(white_blue );
@@ -840,9 +1210,9 @@ public class Data extends javax.swing.JFrame{
             int columnCount = metaData.getColumnCount();
             for (int column = 1; column <= columnCount; column++) {
                 String column_name = metaData.getColumnName(column);
-                StringBuilder myName = new StringBuilder(column_name);
-                myName.setCharAt(0, Character.toUpperCase(column_name.charAt(0)));
-                column_name = myName.toString();
+                //StringBuilder myName = new StringBuilder(column_name);
+                //myName.setCharAt(0, Character.toUpperCase(column_name.charAt(0)));
+               // column_name = myName.toString();
                 columnNames.add(column_name);
             }
 
@@ -867,23 +1237,29 @@ public class Data extends javax.swing.JFrame{
     /**
      * @param args the command line arguments
      */
-    
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu AdvSett;
     private javax.swing.JButton Crtificate;
     private javax.swing.JMenu Switch;
     private javax.swing.JMenu Tagsettings;
     private javax.swing.JMenu certificatesettings;
+    private javax.swing.JMenu certificatesettings1;
+    private javax.swing.JMenu certificatesettings2;
     private javax.swing.JComboBox<String> filter_sponsor;
     private javax.swing.JComboBox<String> filter_type;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JMenu lan_connection;
+    private javax.swing.JMenuItem lan;
+    private javax.swing.JMenuItem offline;
+    private javax.swing.JMenuItem online;
     private javax.swing.JButton print_bt;
     private javax.swing.JTextField print_cert;
     private javax.swing.JTextField search;
@@ -892,8 +1268,8 @@ public class Data extends javax.swing.JFrame{
     public void insert_buttons()
 	{
             //add button in status
-        Userdata.getColumn("Attendees").setCellRenderer(new ButtonRenderer());
-        Userdata.getColumn("Attendees").setCellEditor(
+        Userdata.getColumn("attendees").setCellRenderer(new ButtonRenderer());
+        Userdata.getColumn("attendees").setCellEditor(
         new ButtonEditor(new JCheckBox(),1));
          
 	}//end function insert buttons

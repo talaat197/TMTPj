@@ -28,12 +28,12 @@ public class Database {
     Connection cn;
     Statement st;
     //specify IP->0 DB Name->1
-    String [] LAN_info = {"192.168.1.107:3306","klydar_cm"};
-    String LAN = "jdbc:mysql://"+LAN_info[0]+"/"+LAN_info[1]+"?zeroDateTimeBehavior=convertToNull";
+    public static String [] LAN_info = {"192.168.1.107:3306","klydar_cm"};
+    public static String LAN = "jdbc:mysql://"+LAN_info[0]+"/"+LAN_info[1]+"?zeroDateTimeBehavior=convertToNull";
     //Cloud info IP->0 , DB Name->1 , username->2 , password->3
-    String[] CLOUD_info = {"192.185.13.161:3306","klydar_cm","klydar","&?f2~PPhXwqd"};
-    String CLOUD ="jdbc:mysql://"+CLOUD_info[0]+"/"+CLOUD_info[1]+"?zeroDateTimeBehavior=convertToNull";
-    String LOCAL = "jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull";
+    public static String[] CLOUD_info = {"192.185.13.161:3306","klydar_cm","klydar","&?f2~PPhXwqd"};
+    public static String CLOUD ="jdbc:mysql://"+CLOUD_info[0]+"/"+CLOUD_info[1]+"?zeroDateTimeBehavior=convertToNull";
+    public static String LOCAL = "jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull";
     //HttpURLConnection con;
     //URL url;
     DatabaseMetaData dm;
@@ -97,11 +97,12 @@ public class Database {
     iscloud = false;
         }
     else if (choice == 1){ //connect to the cloud
+       
        this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
        iscloud = true;
     }
     else if(choice == 2){//lan connection
-        System.out.println(LAN);
+        
         this.cn = DriverManager.getConnection(LAN); 
             }
     } catch (Exception ex) {
