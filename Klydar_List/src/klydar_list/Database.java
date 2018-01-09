@@ -23,16 +23,15 @@ import javax.swing.JTextField;
  * @author Talaat
  */
 public class Database {
-    static boolean iscloud;
     static boolean global_flag = false;
     Connection cn;
     Statement st;
     //specify IP->0 DB Name->1
     public static String [] LAN_info = {"192.168.1.107:3306","klydar_cm"};
-    public static String LAN = "jdbc:mysql://"+LAN_info[0]+"/"+LAN_info[1]+"?zeroDateTimeBehavior=convertToNull";
+    public static String LAN;
     //Cloud info IP->0 , DB Name->1 , username->2 , password->3
     public static String[] CLOUD_info = {"192.185.13.161:3306","klydar_cm","klydar","&?f2~PPhXwqd"};
-    public static String CLOUD ="jdbc:mysql://"+CLOUD_info[0]+"/"+CLOUD_info[1]+"?zeroDateTimeBehavior=convertToNull";
+    public static String CLOUD;
     public static String LOCAL = "jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull";
     //HttpURLConnection con;
     //URL url;
@@ -42,19 +41,13 @@ public class Database {
         try
         {
          Class.forName("com.mysql.jdbc.Driver");
-         this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
-         iscloud=true;
+            connectToCloud();
         }
         catch(Exception e)
-        {try{
-       cn = DriverManager.getConnection(LOCAL,"root","");
-       
-       iscloud=false;
-       st=cn.createStatement();
-        }
-        catch(Exception ex){
-            JOptionPane.showMessageDialog(null,"Internet conncetion problem");
-            }
+        {
+            alert_frame obj = new alert_frame("Failure to connect to the server");
+            obj.setVisible(true);
+            
         }
     }//end connection
     public ResultSet select_query(String query) 
@@ -63,7 +56,7 @@ public class Database {
         try
         {
         if(!cn.isValid(2)){
-           this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
+           connectToCloud();
         }
         Statement ste= cn.createStatement();
         rs = ste.executeQuery(query);
@@ -71,7 +64,8 @@ public class Database {
         }
         catch(Exception e)
         {
-           JOptionPane.showMessageDialog(null,e); 
+           alert_frame obj = new alert_frame("Failure to update Cell in the server");
+           obj.setVisible(true); 
         }
         return rs;
     }//end select query
@@ -80,30 +74,55 @@ public class Database {
         try{
             if(cn.isValid(2));
             else{
-               this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
+               connectToCloud();
                  }
             Statement ste= cn.createStatement();
             ste.executeUpdate(query);
         }
         catch(Exception e)
         {   
-            JOptionPane.showMessageDialog(null,e);
+            alert_frame obj = new alert_frame("Failure to update Cell in the server");
+            obj.setVisible(true);
         }   
-    }//end update query
+    }//end update query 
+    //function to connect to speific database 
+    public void connectToCloud(){
+        try{
+         CLOUD ="jdbc:mysql://"+CLOUD_info[0]+"/"+CLOUD_info[1]+"?zeroDateTimeBehavior=convertToNull";
+         this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);   
+        }catch(Exception ex){
+            try{
+            alert_frame obj = new alert_frame("failure to Connect to CLOUD server");
+            obj.setVisible(true);
+            cn = DriverManager.getConnection(LOCAL,"root","");
+            st=cn.createStatement();
+        }
+        catch(Exception e){
+            alert_frame obj = new alert_frame("Failure to connect to Localhost");
+            obj.setVisible(true);
+            }
+        }
+    }
+    public void connectToLan(){
+        try{
+         LAN = "jdbc:mysql://"+LAN_info[0]+"/"+LAN_info[1]+"?zeroDateTimeBehavior=convertToNull";
+         this.cn = DriverManager.getConnection(LAN);  
+        }catch(Exception ex){
+            alert_frame obj = new alert_frame("Failure to connect LAN Server");
+            obj.setVisible(true);
+        }
+    }
      public void switch_to_local(int choice){ // take the choice of the connection -> {Localhost , Cloud , LAN connection}
  try {
     if(choice == 0){//conncet to the localhost
     cn = DriverManager.getConnection(LOCAL,"root","");
-    iscloud = false;
+    
         }
     else if (choice == 1){ //connect to the cloud
-       
-       this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
-       iscloud = true;
+       connectToCloud();
     }
-    else if(choice == 2){//lan connection
-        
-        this.cn = DriverManager.getConnection(LAN); 
+    else if(choice == 2){//lan connection    
+        connectToLan();
             }
     } catch (Exception ex) {
     JOptionPane.showMessageDialog(null,"Problem with The connection you choosed "+ ex);

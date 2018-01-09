@@ -213,7 +213,8 @@ public class Advanced_Settings extends javax.swing.JFrame {
             db.updata_query(query);
             this.dispose();
         }catch(Exception e){
-            JOptionPane.showMessageDialog(this, e+" Here");
+            alert_frame obj = new alert_frame(e.toString());
+            obj.setVisible(true);
         }
         
     }//GEN-LAST:event_SaveActionPerformed
