@@ -188,7 +188,7 @@ public class Data extends javax.swing.JFrame {
             Directprint.CME_font_size = Integer.parseInt(all_settings.get(15));
             Directprint.CME_x = Integer.parseInt(all_settings.get(16));
             Directprint.CME_y = Integer.parseInt(all_settings.get(17));
-        } catch (Exception e) {
+        } catch (Exception e){
             alert_frame obj = new alert_frame("Settings file not found");
             obj.setVisible(true);
         }
@@ -2129,7 +2129,12 @@ public class Data extends javax.swing.JFrame {
 
                 }
                 /*Calculate CME*/
-                
+                if(getColumnIndex(Userdata,"CME")!=-1)
+                {
+                    String CME=Userdata.getValueAt(i, getColumnIndex(Userdata, "CME")).toString();
+                    Userdata.setValueAt(CME, i, getColumnIndex(Userdata, "CME_MINUTES"));
+                    Userdata.setValueAt((int)(Math.ceil(Float.parseFloat(CME)/60)), i, getColumnIndex(Userdata,"CME"));
+                }
                 /***************/
             }
             Userdata.setDefaultEditor(Object.class, new MyEditor());
@@ -2146,7 +2151,7 @@ public class Data extends javax.swing.JFrame {
 
         List<RowSorter.SortKey> sortKeys = new ArrayList<>(25);
         sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-        sortKeys.add(new RowSorter.SortKey(6, SortOrder.ASCENDING));
+        //sortKeys.add(new RowSorter.SortKey(6, SortOrder.ASCENDING));
         sorter.setSortKeys(sortKeys);
     }
 
@@ -2166,6 +2171,7 @@ public class Data extends javax.swing.JFrame {
                 column_name = myName.toString();
                 columnNames.add(column_name);
             }
+            columnNames.add("CME_MINUTES");
             // data of the table
             data = new Vector<Vector<Object>>();
 
@@ -2217,11 +2223,17 @@ public class Data extends javax.swing.JFrame {
                     String column_name = Userdata.getColumnName(Userdata.getSelectedColumn());
                     //column_name=column_name.toLowerCase();
                     String data_updated = Userdata.getValueAt(selected_row, Userdata.getSelectedColumn()).toString();
-                    if (Login.allow_update != 1 || column_name.equals("Id") || column_name.equals("F_num")) {
+                    if (Login.allow_update != 1 || column_name.equals("Id") || column_name.equals("F_num") || column_name.equals("CME_MINUTES")) {
                         alert_frame af = new alert_frame("you are not privileged to update user");
                         af.setVisible(true);
                         Userdata.setValueAt(old_value, selected_row, Userdata.getSelectedColumn());
-                    } else if (column_name.equals("Mobile")) {
+                    } 
+                    else if (column_name.equals("CME")) {
+                        //check for mob
+                        int cme = Integer.parseInt(data_updated);
+                        cme=cme*60;
+                        VUpdate_Data(DatabaseConstants.update_2tables("no_update", column_name, Integer.toString(cme), Integer.toString(id), Login.Uname));
+                    }else if (column_name.equals("Mobile")) {
                         //check for mob
                         long mob = Long.parseLong(data_updated);
 

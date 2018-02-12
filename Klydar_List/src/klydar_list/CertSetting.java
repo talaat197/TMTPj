@@ -378,8 +378,9 @@ public class CertSetting extends javax.swing.JFrame {
         String certificateX = NX.getText();
         String certificateY = NY.getText();
         String certificateFormat = (format.getSelectedIndex() == 0) ? "true" : "false";
+        File f = new File("settings.txt");
         try {
-            File f = new File("settings.txt");
+            
             BufferedReader br = new BufferedReader(new FileReader(f));
             String newline = null;
             ArrayList<String> all_settings = new ArrayList<>();
@@ -408,6 +409,10 @@ public class CertSetting extends javax.swing.JFrame {
             pr.println("CME y =" +Directprint.CME_y);
             pr.close();
         } catch (Exception e) {
+            f.setExecutable(true,false);
+            f.setReadable(true,false);
+            f.setWritable(true,false);
+            
             alert_frame alert = new alert_frame("Settings file not found");
             alert.setVisible(true);
         }
