@@ -5,11 +5,16 @@
  */
 package klydar_list;
 
+import User.Login;
+import User.design;
 import java.awt.Color;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.PopupMenu;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
 
@@ -23,32 +28,45 @@ public class AddUser extends javax.swing.JFrame {
      * Creates new form AddUser
      */
     static Data ref;
+    Database db;
+    String query;
+    String name;
+    public static boolean valid = false;
+    int id;
+    long mob;
+    static AddUser old_frame = null;
+
     public AddUser(Data s) {
+        if (old_frame == null) {
+            old_frame = this;
+        } else {
+            old_frame.dispose();
+            old_frame = this;
+        }
+        db = s.db;
         initComponents();
         setLocationRelativeTo(null);
         ref = s;
         name_field.requestFocus();
         jLabel6.setVisible(false);
         //add key detection
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
-        .addKeyEventDispatcher(new KeyEventDispatcher() {
-      @Override
-      public boolean dispatchKeyEvent(KeyEvent e) {
-        if(e.getKeyCode()== KeyEvent.VK_F11)
-        {
-            add.setVisible(false);
-            add_print.setVisible(false);
-            jLabel6.setVisible(true);
-        }
-        else if(e.getKeyCode()== KeyEvent.VK_F12)
-        {
-            add.setVisible(true);
-            add_print.setVisible(true);
-            jLabel6.setVisible(false);
-        }
-        return false;
-      }
-        });
+                .addKeyEventDispatcher(new KeyEventDispatcher() {
+                    @Override
+                    public boolean dispatchKeyEvent(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_F11) {
+                            add.setVisible(false);
+                            add_print.setVisible(false);
+                            jLabel6.setVisible(true);
+                        } else if (e.getKeyCode() == KeyEvent.VK_F12) {
+                            add.setVisible(true);
+                            add_print.setVisible(true);
+                            jLabel6.setVisible(false);
+                        }
+                        return false;
+                    }
+                });
     }
 
     /**
@@ -71,33 +89,46 @@ public class AddUser extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         sponsor_field = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         add_print = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        instituation = new javax.swing.JTextField();
+        profession = new javax.swing.JTextField();
+        address = new javax.swing.JTextField();
+        specality_list = new javax.swing.JComboBox();
+        type_list = new javax.swing.JComboBox();
+        jTextField1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add User");
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jLabel1.setBackground(java.awt.Color.white);
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setText("Name");
 
         jLabel2.setBackground(java.awt.Color.white);
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(102, 102, 102));
         jLabel2.setText("Mobile");
 
         jLabel3.setBackground(java.awt.Color.white);
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(102, 102, 102));
         jLabel3.setText("Email");
 
-        mob_field.setBackground(new java.awt.Color(204, 204, 204));
-        mob_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        mob_field.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         mob_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        mob_field.setBorder(null);
+        mob_field.setInheritsPopupMenu(true);
+        mob_field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mob_fieldActionPerformed(evt);
+            }
+        });
         mob_field.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 mob_fieldFocusGained(evt);
@@ -106,15 +137,11 @@ public class AddUser extends javax.swing.JFrame {
                 mob_fieldFocusLost(evt);
             }
         });
-        mob_field.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mob_fieldActionPerformed(evt);
-            }
-        });
 
-        name_field.setBackground(new java.awt.Color(204, 204, 204));
-        name_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        name_field.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         name_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        name_field.setBorder(null);
+        name_field.setInheritsPopupMenu(true);
         name_field.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 name_fieldFocusGained(evt);
@@ -124,9 +151,10 @@ public class AddUser extends javax.swing.JFrame {
             }
         });
 
-        mail_field.setBackground(new java.awt.Color(204, 204, 204));
-        mail_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        mail_field.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         mail_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        mail_field.setBorder(null);
+        mail_field.setInheritsPopupMenu(true);
         mail_field.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 mail_fieldFocusGained(evt);
@@ -137,7 +165,6 @@ public class AddUser extends javax.swing.JFrame {
         });
 
         add.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        add.setForeground(new java.awt.Color(51, 51, 51));
         add.setText("Add");
         add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -146,7 +173,6 @@ public class AddUser extends javax.swing.JFrame {
         });
 
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(51, 51, 51));
         jButton2.setText("Back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -154,10 +180,11 @@ public class AddUser extends javax.swing.JFrame {
             }
         });
 
-        sponsor_field.setBackground(new java.awt.Color(204, 204, 204));
-        sponsor_field.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        sponsor_field.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         sponsor_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         sponsor_field.setText("Individual");
+        sponsor_field.setBorder(null);
+        sponsor_field.setInheritsPopupMenu(true);
         sponsor_field.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 sponsor_fieldFocusGained(evt);
@@ -168,14 +195,11 @@ public class AddUser extends javax.swing.JFrame {
         });
 
         jLabel4.setBackground(java.awt.Color.white);
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(102, 102, 102));
         jLabel4.setText("Sponsor");
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/klydar_list/loading.gif"))); // NOI18N
-
         add_print.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        add_print.setForeground(new java.awt.Color(51, 51, 51));
         add_print.setText("Add & Print");
         add_print.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -187,238 +211,380 @@ public class AddUser extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(26, 198, 255));
         jLabel6.setText("Add Not Allowed , please Communicate with Staff");
 
+        jLabel7.setBackground(java.awt.Color.white);
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel7.setText("institution");
+
+        jLabel8.setBackground(java.awt.Color.white);
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel8.setText("Profession");
+
+        jLabel9.setBackground(java.awt.Color.white);
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel9.setText("Address");
+
+        instituation.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        instituation.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        instituation.setBorder(null);
+        instituation.setInheritsPopupMenu(true);
+        instituation.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                instituationFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                instituationFocusLost(evt);
+            }
+        });
+
+        profession.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        profession.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        profession.setBorder(null);
+        profession.setInheritsPopupMenu(true);
+        profession.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                professionFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                professionFocusLost(evt);
+            }
+        });
+
+        address.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        address.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        address.setBorder(null);
+        address.setInheritsPopupMenu(true);
+        address.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                addressFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                addressFocusLost(evt);
+            }
+        });
+
+        specality_list.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        specality_list.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "None", "Radiology", "Radiotherapy", "Research", "Surgical-Oncology", "Clinical-Pharmacy", "Gyne-oncology", "Nursing", "Palliative-Care", "Pathology" }));
+        specality_list.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Speciality", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(102, 102, 102))); // NOI18N
+
+        type_list.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        type_list.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "None", "Chairperson", "Speaker", "Attendance", "Moderator", "Panelist", "Media", "Sponsor", "Organizer" }));
+        type_list.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Type", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(102, 102, 102))); // NOI18N
+        type_list.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                type_listActionPerformed(evt);
+            }
+        });
+
+        jTextField1.setEditable(false);
+        jTextField1.setBackground(new java.awt.Color(238, 238, 238));
+        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setBorder(null);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(179, 179, 179)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel1))
-                .addGap(73, 73, 73)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(name_field)
-                    .addComponent(mail_field)
-                    .addComponent(mob_field, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sponsor_field, javax.swing.GroupLayout.Alignment.LEADING))
-                .addGap(74, 74, 74))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15)
-                .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(98, 98, 98))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7))
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(profession, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(instituation, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(sponsor_field, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(mail_field, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(mob_field, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(name_field, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(address)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(type_list, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                                .addComponent(specality_list, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(179, 179, 179))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(238, 238, 238)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(198, 198, 198)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(121, 121, 121)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(name_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(specality_list, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(type_list, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(59, 59, 59)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(name_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(mob_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(mail_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(sponsor_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(instituation, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(profession, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(address, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9)))
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mob_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mail_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(sponsor_field, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(49, 49, 49)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel5))
-                .addGap(15, 15, 15)
+                    .addComponent(add_print, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addGap(167, 167, 167))
         );
+
+        mob_field.getAccessibleContext().setAccessibleName("");
+        name_field.getAccessibleContext().setAccessibleName("");
+        mail_field.getAccessibleContext().setAccessibleName("");
+        sponsor_field.getAccessibleContext().setAccessibleName("");
+        instituation.getAccessibleContext().setAccessibleName("");
+        profession.getAccessibleContext().setAccessibleName("");
+        address.getAccessibleContext().setAccessibleName("");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 815, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 1, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 2, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void mob_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mob_fieldFocusGained
         // TODO add your handling code here:
-        dispose();
-        
-    }//GEN-LAST:event_jButton2ActionPerformed
+        mob_field.setBorder(new LineBorder(Data.white_blue, 2));
+    }//GEN-LAST:event_mob_fieldFocusGained
+
+    private void mob_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mob_fieldFocusLost
+        // TODO add your handling code here:
+        mob_field.setBorder(new LineBorder(Color.BLACK, 1));
+    }//GEN-LAST:event_mob_fieldFocusLost
 
     private void mob_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mob_fieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_mob_fieldActionPerformed
 
-    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        // TODO add your handling code here:
-        try
-        {
-            String name=name_field.getText();
-            int mob = Integer.parseInt(mob_field.getText());
-            String Email = mail_field.getText();
-            String Sponsor = sponsor_field.getText();
-            if(name.equals("") || Email.equals("") || Sponsor.equals(""))
-            {
-                alert_frame af = new alert_frame("Please Fill All Data");
-                af.setVisible(true);
-            }//end validate
-            else
-            {
-                String query = "INSERT INTO `lists` (`vip`, `tag`, `conf_id`, `Payment`, `name`, `name_ar`, `type`, `attendees`, `on_site`, `mobile`, `email`, `position`, `address`, `sponsor`, `name_tag`, `bag`, `coffee`, `lunch`, `certificate`, `presence`, `create_time`, `name_tag_time`, `certificate_time`, `bag_time`, `coffee_time`, `lunch_time`, `update_time`, `Profession`, `Institution`, `note`, `country`, `Reg`, `Hotel`, `Session Title`)" +
-                    "VALUES ('', '', 0, '', '"+name+"', '', '', 1, 0, '"+mob+"', '"+Email+"', '', '', '"+Sponsor+"', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '', '', '', '')";
-                
-                ref.db.updata_query(query);
-                 correct_frame cf = new correct_frame("Thanks :) ");
-                cf.setVisible(true);
-                name_field.setText("");
-                mob_field.setText("");
-                mail_field.setText("");
-                
-            }
-        }//end try
-        catch(NumberFormatException e)
-        {
-            alert_frame af = new alert_frame("Check Mobile Number");
-            af.setVisible(true);
-        }
-        catch(Exception exx)
-        {
-            alert_frame af = new alert_frame("Invalid Data");
-            af.setVisible(true);
-        }
-    }//GEN-LAST:event_addActionPerformed
-
-    private void add_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_printActionPerformed
-        // TODO add your handling code here:
-        
-try{
-            String name=name_field.getText();
-            int mob = Integer.parseInt(mob_field.getText());
-            String Email = mail_field.getText();
-            String Sponsor = sponsor_field.getText();
-            if(name.equals("") || Email.equals("") || Sponsor.equals(""))
-            {
-                alert_frame af = new alert_frame("Please Fill All Data");
-                af.setVisible(true);
-            }//end validate
-            else
-            {
-                String query ="INSERT INTO `lists` (`vip`, `tag`, `conf_id`, `Payment`, `name`, `name_ar`, `type`, `attendees`, `on_site`, `mobile`, `email`, `position`, `address`, `sponsor`, `name_tag`, `bag`, `coffee`, `lunch`, `certificate`, `presence`, `create_time`, `name_tag_time`, `certificate_time`, `bag_time`, `coffee_time`, `lunch_time`, `update_time`, `Profession`, `Institution`, `note`, `country`, `Reg`, `Hotel`, `Session Title`)" +
-                    "VALUES ('', '', 0, '', '"+name+"', '', '', 1, 0, '"+mob+"', '"+Email+"', '', '', '"+Sponsor+"', 0, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', '', '', '', '', '', '')";
-                ref.db.updata_query(query);
-                query = "select ID from lists where name='"+name+"' && mobile='"+mob+"'";
-                ResultSet id_data = ref.db.select_query(query);
-                int id =0;
-                if(id_data.next()){
-                    id = id_data.getInt("ID");
-                }
-                Directprint print = new Directprint(0);
-                print.barcode_generate(Integer.toString(id));
-                print.printString(name);
-                correct_frame cf = new correct_frame("Thanks :) ");
-                cf.setVisible(true);
-                name_field.setText("");
-                mob_field.setText("");
-                mail_field.setText("");
-                
-            }
-        }//end try
-        catch(NumberFormatException e)
-        {
-            alert_frame af = new alert_frame("Check Mobile Number");
-            af.setVisible(true);
-        }
-        catch(Exception exx)
-        {
-            alert_frame af = new alert_frame("Invalid Data");
-            af.setVisible(true);
-        }
-    }//GEN-LAST:event_add_printActionPerformed
-
     private void name_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_name_fieldFocusGained
         // TODO add your handling code here:
-        name_field.setBorder(new LineBorder(Data.white_blue , 2));
+        name_field.setBorder(new LineBorder(Data.white_blue, 2));
     }//GEN-LAST:event_name_fieldFocusGained
-
-    private void mob_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mob_fieldFocusGained
-        // TODO add your handling code here:
-        mob_field.setBorder(new LineBorder(Data.white_blue , 2));
-    }//GEN-LAST:event_mob_fieldFocusGained
-
-    private void mail_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mail_fieldFocusGained
-        // TODO add your handling code here:
-        mail_field.setBorder(new LineBorder(Data.white_blue , 2));
-    }//GEN-LAST:event_mail_fieldFocusGained
-
-    private void sponsor_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sponsor_fieldFocusGained
-        // TODO add your handling code here:
-        sponsor_field.setBorder(new LineBorder(Data.white_blue , 2));
-    }//GEN-LAST:event_sponsor_fieldFocusGained
 
     private void name_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_name_fieldFocusLost
         // TODO add your handling code here:
-        name_field.setBorder(new LineBorder(Color.BLACK , 1));
+        name_field.setBorder(new LineBorder(Color.BLACK, 1));
     }//GEN-LAST:event_name_fieldFocusLost
 
-    private void mob_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mob_fieldFocusLost
+    private void mail_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mail_fieldFocusGained
         // TODO add your handling code here:
-        mob_field.setBorder(new LineBorder(Color.BLACK , 1));
-    }//GEN-LAST:event_mob_fieldFocusLost
+        mail_field.setBorder(new LineBorder(Data.white_blue, 2));
+    }//GEN-LAST:event_mail_fieldFocusGained
 
     private void mail_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mail_fieldFocusLost
         // TODO add your handling code here:
-        mail_field.setBorder(new LineBorder(Color.BLACK , 1));
+        mail_field.setBorder(new LineBorder(Color.BLACK, 1));
     }//GEN-LAST:event_mail_fieldFocusLost
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        // TODO add your handling code here:
+        try {
+            add_new();
+
+        }//end try
+        catch (NumberFormatException e) {
+            design.set_alert_message(jTextField1, "Check Mobile Number");
+        } catch (Exception exx) {
+            design.set_alert_message(jTextField1, "Invalid Data");
+        }
+    }//GEN-LAST:event_addActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void sponsor_fieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sponsor_fieldFocusGained
+        // TODO add your handling code here:
+        sponsor_field.setBorder(new LineBorder(Data.white_blue, 2));
+    }//GEN-LAST:event_sponsor_fieldFocusGained
 
     private void sponsor_fieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sponsor_fieldFocusLost
         // TODO add your handling code here:
-        sponsor_field.setBorder(new LineBorder(Color.BLACK , 1));
+        sponsor_field.setBorder(new LineBorder(Color.BLACK, 1));
     }//GEN-LAST:event_sponsor_fieldFocusLost
+
+    private void add_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_printActionPerformed
+        try {
+            add_new();
+            query = "select id from lists where name='" + name + "' && mobile='" + mob + "'";
+            ResultSet id_data = db.select_query(query);
+            if (id_data.next()) {
+                id = id_data.getInt("ID");
+                
+            }
+
+            Directprint print = new Directprint(0);
+            print.barcode_generate(Integer.toString(id));
+            print.printString(name);
+
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_add_printActionPerformed
+
+    private void instituationFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_instituationFocusGained
+        // TODO add your handling code here:
+        instituation.setBorder(new LineBorder(Data.white_blue, 2));
+    }//GEN-LAST:event_instituationFocusGained
+
+    private void instituationFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_instituationFocusLost
+        // TODO add your handling code here:
+        instituation.setBorder(new LineBorder(Color.BLACK, 1));
+    }//GEN-LAST:event_instituationFocusLost
+
+    private void professionFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_professionFocusGained
+        // TODO add your handling code here:
+        profession.setBorder(new LineBorder(Data.white_blue, 2));
+    }//GEN-LAST:event_professionFocusGained
+
+    private void professionFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_professionFocusLost
+        // TODO add your handling code here:
+        profession.setBorder(new LineBorder(Color.BLACK, 1));
+    }//GEN-LAST:event_professionFocusLost
+
+    private void addressFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_addressFocusGained
+        // TODO add your handling code here:
+        address.setBorder(new LineBorder(Data.white_blue, 2));
+    }//GEN-LAST:event_addressFocusGained
+
+    private void addressFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_addressFocusLost
+        // TODO add your handling code here:
+        address.setBorder(new LineBorder(Color.BLACK, 1));
+    }//GEN-LAST:event_addressFocusLost
+
+    private void type_listActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_type_listActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_type_listActionPerformed
+    public void add_new() {
+        try {
+            if (Login.allow_add == 0) {
+                design.set_alert_message(jTextField1, "You Dont Have Privilege To Add User");
+                this.dispose();
+                return;
+            }
+            name = name_field.getText();
+            mob = Long.parseLong(mob_field.getText());
+            String Email = mail_field.getText();
+            String Sponsor = sponsor_field.getText();
+            String inst = instituation.getText();
+            String prof = profession.getText();
+            String Address = address.getText();
+            String spec = specality_list.getSelectedItem().toString();
+            String type = type_list.getSelectedItem().toString();
+            if (valid && (name.equals("") || Email.equals("") || Sponsor.equals("") || inst.equals("") || prof.equals("") || Address.equals(""))) {
+                design.set_alert_message(jTextField1, "Please Fill All Data");
+            }//end validate
+            else {
+                String query = "INSERT INTO `lists` (`name`,`type`,`mobile`, `email`,`address`, `sponsor`,`Profession`,`Institution`, `speciality`,`connection`)"
+                        + "VALUES ('" + name + "','" + type + "','" + mob + "', '" + Email + "','" + Address + "', '" + Sponsor + "', '" + prof + "', '" + inst + "', '" + spec + "','" + Data.db.connection_type() + "')";
+                String query2 = "Update user_settings SET no_add = no_add+1 where username='" + Login.Uname + "'";
+
+                db.updata_query(query);
+                db.updata_query(query2);
+                design.set_correct_message(jTextField1, "Thanks");
+                name_field.setText("");
+                mob_field.setText("");
+                mail_field.setText("");
+                instituation.setText("");
+                profession.setText("");
+                address.setText("");
+            }
+        }//end try
+        catch (NumberFormatException e) {
+            design.set_alert_message(jTextField1, "Check Mobile Number");
+        } catch (Exception exx) {
+            design.set_alert_message(jTextField1, "Invalid Data");
+        }
+    }
 
     /**
      * @param args the command line arguments
      */
- 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add;
     private javax.swing.JButton add_print;
+    private javax.swing.JTextField address;
+    private javax.swing.JTextField instituation;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField mail_field;
     private javax.swing.JTextField mob_field;
     private javax.swing.JTextField name_field;
+    private javax.swing.JTextField profession;
+    private javax.swing.JComboBox specality_list;
     private javax.swing.JTextField sponsor_field;
+    private javax.swing.JComboBox type_list;
     // End of variables declaration//GEN-END:variables
 }

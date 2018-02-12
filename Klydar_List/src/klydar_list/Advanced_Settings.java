@@ -5,6 +5,8 @@
  */
 package klydar_list;
 
+import java.awt.Toolkit;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,19 +19,33 @@ public class Advanced_Settings extends javax.swing.JFrame {
      * Creates new form Advanced_Settings
      */
     public static boolean directcon = false;
+    public static boolean IsServer = false;
+    public static boolean isVip = false;
     Database db;
     public Advanced_Settings(Database d) {
         this.db = d;
         initComponents();
+        jTextField1.setText(String.valueOf(DatabaseConstants.refresh_interval));
+        backup_field.setText(String.valueOf(DatabaseConstants.BACKUP_TIME));
         cloudip.setText(Database.CLOUD_info[0]);
         clouddbname.setText(Database.CLOUD_info[1]);
         username.setText(Database.CLOUD_info[2]);
         password.setText(Database.CLOUD_info[3]);
         LanIP.setText(Database.LAN_info[0]);
         Landbname.setText(Database.LAN_info[1]);
+        system_pw.setText(Data.system_password);
         if(directcon){
          directconn.doClick();}
+        if(Backup.Server_mood == 1){
+            backup_bt1.setText("ON");
+        }
+        else{
+            backup_bt1.setText("OFF");
+        }
+        if(IsServer == true) server.doClick();
+        if(isVip) vip.doClick();
         setLocationRelativeTo(null);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
     }
 
     /**
@@ -42,60 +58,49 @@ public class Advanced_Settings extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        Save = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         cloudIP = new javax.swing.JLabel();
         cloudip = new javax.swing.JTextField();
-        cloudIP1 = new javax.swing.JLabel();
-        clouddbname = new javax.swing.JTextField();
         cloudIP2 = new javax.swing.JLabel();
-        cloudIP3 = new javax.swing.JLabel();
         username = new javax.swing.JTextField();
+        cloudIP1 = new javax.swing.JLabel();
+        cloudIP3 = new javax.swing.JLabel();
         password = new javax.swing.JTextField();
+        clouddbname = new javax.swing.JTextField();
+        GetBaackup = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
         cloudIP4 = new javax.swing.JLabel();
         LanIP = new javax.swing.JTextField();
-        Landbname = new javax.swing.JTextField();
         cloudIP5 = new javax.swing.JLabel();
-        Save = new javax.swing.JButton();
-        directconn = new javax.swing.JRadioButton();
+        Landbname = new javax.swing.JTextField();
+        SendBackup = new javax.swing.JButton();
+        lanusername = new javax.swing.JTextField();
         cloudIP6 = new javax.swing.JLabel();
+        lanpass = new javax.swing.JTextField();
+        cloudIP7 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        backup_field = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        system_pw = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        dinner_bt = new javax.swing.JToggleButton();
+        jLabel5 = new javax.swing.JLabel();
+        backup_bt1 = new javax.swing.JToggleButton();
+        directconn = new javax.swing.JRadioButton();
+        vip = new javax.swing.JRadioButton();
+        server = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setFocusable(false);
+        setResizable(false);
 
-        cloudIP.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cloudIP.setText("Cloud IP");
-
-        cloudip.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-
-        cloudIP1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cloudIP1.setText("Cloud Database name");
-
-        clouddbname.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-
-        cloudIP2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cloudIP2.setText("Cloud Username");
-
-        cloudIP3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cloudIP3.setText("Cloud Password");
-
-        username.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-
-        password.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-
-        cloudIP4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cloudIP4.setText("Lan IP");
-
-        LanIP.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-
-        Landbname.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        Landbname.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LandbnameActionPerformed(evt);
-            }
-        });
-
-        cloudIP5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cloudIP5.setText("Lan Database name");
-
-        Save.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        Save.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        Save.setForeground(new java.awt.Color(51, 51, 51));
         Save.setText("Save");
         Save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -103,81 +108,428 @@ public class Advanced_Settings extends javax.swing.JFrame {
             }
         });
 
-        directconn.setText("Direct connection");
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel6.setText("Advanced Settings");
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cloud", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14), new java.awt.Color(102, 102, 102)), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)))); // NOI18N
+
+        cloudIP.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudIP.setForeground(new java.awt.Color(51, 51, 51));
+        cloudIP.setText("Ip Address");
+
+        cloudip.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudip.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        cloudip.setBorder(null);
+        cloudip.setRequestFocusEnabled(false);
+
+        cloudIP2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudIP2.setForeground(new java.awt.Color(51, 51, 51));
+        cloudIP2.setText("User Name");
+
+        username.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        username.setBorder(null);
+
+        cloudIP1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudIP1.setForeground(new java.awt.Color(51, 51, 51));
+        cloudIP1.setText("Database name");
+
+        cloudIP3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudIP3.setForeground(new java.awt.Color(51, 51, 51));
+        cloudIP3.setText("Password");
+
+        password.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        password.setBorder(null);
+
+        clouddbname.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        clouddbname.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        clouddbname.setBorder(null);
+
+        GetBaackup.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        GetBaackup.setForeground(new java.awt.Color(51, 51, 51));
+        GetBaackup.setText("Get Backup From server");
+        GetBaackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GetBaackupActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cloudIP, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudip, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudIP2, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cloudIP1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(clouddbname, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudIP3, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(331, 331, 331)
+                .addComponent(GetBaackup, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cloudIP2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudIP1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudIP3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cloudIP))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cloudip, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(clouddbname, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(GetBaackup, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
+        );
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, "Local Server", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14), new java.awt.Color(102, 102, 102)), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)))); // NOI18N
+
+        cloudIP4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudIP4.setForeground(new java.awt.Color(51, 51, 51));
+        cloudIP4.setText("Ip Address");
+
+        LanIP.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        LanIP.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        LanIP.setBorder(null);
+
+        cloudIP5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudIP5.setForeground(new java.awt.Color(51, 51, 51));
+        cloudIP5.setText("Database Name");
+
+        Landbname.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        Landbname.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        Landbname.setBorder(null);
+        Landbname.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LandbnameActionPerformed(evt);
+            }
+        });
+
+        SendBackup.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        SendBackup.setForeground(new java.awt.Color(51, 51, 51));
+        SendBackup.setText("Send Backup to Server");
+        SendBackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SendBackupActionPerformed(evt);
+            }
+        });
+
+        lanusername.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lanusername.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        lanusername.setBorder(null);
+        lanusername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lanusernameActionPerformed(evt);
+            }
+        });
 
         cloudIP6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cloudIP6.setText("Autonomuous Printing");
+        cloudIP6.setForeground(new java.awt.Color(51, 51, 51));
+        cloudIP6.setText("User Name");
+
+        lanpass.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lanpass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        lanpass.setBorder(null);
+        lanpass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lanpassActionPerformed(evt);
+            }
+        });
+
+        cloudIP7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        cloudIP7.setForeground(new java.awt.Color(51, 51, 51));
+        cloudIP7.setText("Password");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cloudIP4)
+                            .addComponent(LanIP, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cloudIP5, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Landbname, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cloudIP6, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lanusername, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cloudIP7, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lanpass, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(337, 337, 337)
+                        .addComponent(SendBackup, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(cloudIP4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(LanIP, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(cloudIP5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Landbname, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(cloudIP6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lanusername, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(cloudIP7, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lanpass, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(SendBackup, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createTitledBorder(null, "Others", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14), new java.awt.Color(102, 102, 102)), javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51)))); // NOI18N
+        jPanel4.setToolTipText("");
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel1.setText("Refresh Time (MINUTES)");
+
+        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setBorder(null);
+        jTextField1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTextField1MouseReleased(evt);
+            }
+        });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel3.setText("Backup Time (MINUTES)");
+
+        backup_field.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        backup_field.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        backup_field.setBorder(null);
+        backup_field.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                backup_fieldMouseReleased(evt);
+            }
+        });
+        backup_field.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                backup_fieldKeyReleased(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel4.setText("System Password");
+
+        system_pw.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        system_pw.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        system_pw.setBorder(null);
+        system_pw.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                system_pwMouseReleased(evt);
+            }
+        });
+        system_pw.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                system_pwActionPerformed(evt);
+            }
+        });
+        system_pw.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                system_pwKeyReleased(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel2.setText("Dinner Mode");
+
+        dinner_bt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        dinner_bt.setText("OFF");
+        dinner_bt.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                dinner_btStateChanged(evt);
+            }
+        });
+        dinner_bt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dinner_btActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel5.setText("Backup");
+
+        backup_bt1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        backup_bt1.setText("OFF");
+        backup_bt1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                backup_bt1StateChanged(evt);
+            }
+        });
+        backup_bt1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backup_bt1ActionPerformed(evt);
+            }
+        });
+
+        directconn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        directconn.setForeground(new java.awt.Color(51, 51, 51));
+        directconn.setText("Certificate Connection");
+
+        vip.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        vip.setForeground(new java.awt.Color(51, 51, 51));
+        vip.setText("VIP List Only");
+        vip.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vipActionPerformed(evt);
+            }
+        });
+
+        server.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        server.setForeground(new java.awt.Color(51, 51, 51));
+        server.setText("Connection Status");
+        server.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dinner_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(backup_bt1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(directconn)
+                        .addGap(11, 11, 11)
+                        .addComponent(server, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(vip, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(backup_field, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(system_pw, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dinner_bt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(backup_bt1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(directconn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(server)
+                    .addComponent(vip))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(backup_field, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(system_pw, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(127, 127, 127))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(131, 131, 131))
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cloudIP2, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cloudIP, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cloudIP4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(136, 136, 136)
-                        .addComponent(Save, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(375, 375, 375)
+                        .addComponent(jLabel6))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cloudip)
-                                    .addComponent(username))
-                                .addGap(18, 18, 18))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(LanIP)
-                                .addGap(18, 18, 18)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cloudIP1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cloudIP3, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cloudIP5, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                            .addComponent(clouddbname)
-                            .addComponent(Landbname))
-                        .addGap(85, 85, 85))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(cloudIP6, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(directconn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(289, 289, 289))))
+                        .addGap(282, 282, 282)
+                        .addComponent(Save, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(41, 41, 41)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cloudIP, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cloudip, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cloudIP1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(clouddbname, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cloudIP2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cloudIP3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(57, 57, 57)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cloudIP5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Landbname, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LanIP, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cloudIP4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(55, 55, 55)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(directconn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cloudIP6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                .addComponent(Save)
-                .addGap(30, 30, 30))
+                .addGap(24, 24, 24)
+                .addComponent(jLabel6)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Save, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         Save.getAccessibleContext().setAccessibleName("save");
@@ -186,51 +538,228 @@ public class Advanced_Settings extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 968, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void GetBaackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GetBaackupActionPerformed
+        // TODO add your handling code here:
+        Backup ba = new Backup();
+        if(Backup.obj == null) Backup.obj = new Database();//initialize it
+        else Backup.obj.connectToCloud();//connect to cloud to get the data
+        ResultSet rs = Backup.obj.select_query(DatabaseConstants.selectAll); // select all the data from the db
+        ba.insert_data(rs);
+    }//GEN-LAST:event_GetBaackupActionPerformed
+
+    private void SendBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendBackupActionPerformed
+        // TODO add your handling code here:
+        Backup ba = new Backup();
+        if(Backup.obj == null) {Backup.obj = new Database(); // initialize it to connect to cloud
+            Backup.obj.switch_to_local(2); // connect to the server
+        }//end if
+        ResultSet rs = Backup.obj.select_query(DatabaseConstants.selectAll); // select all the data from the server to send to cloud
+        ba.ToServer = true;
+        ba.insert_data(rs);
+    }//GEN-LAST:event_SendBackupActionPerformed
+
+    private void system_pwKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_system_pwKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_system_pwKeyReleased
+
+    private void system_pwActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_system_pwActionPerformed
+        try{
+            Data.system_password = system_pw.getText();
+            String query = "update "+DatabaseConstants.global_stt_table+" set system_password='"+Data.system_password+"' where id_setting=1";
+            db.updata_query(query);
+            alert_frame alert = new alert_frame("Password Saved");
+            alert.setVisible(true);
+        }catch(Exception e){
+            alert_frame alert = new alert_frame("password hasn't saved !!");
+            alert.setVisible(true);
+        }
+    }//GEN-LAST:event_system_pwActionPerformed
+
+    private void system_pwMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_system_pwMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_system_pwMouseReleased
+
+    private void backup_bt1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backup_bt1ActionPerformed
+        // TODO add your handling code here:
+        if(backup_bt1.getText().equals("OFF"))
+        {
+            backup_bt1.setText("ON");
+            Backup.first_time = true;//initialize object
+        }
+        else
+        {
+            backup_bt1.setText("OFF");
+            Backup.obj.close_db();//cclose previous object
+        }
+    }//GEN-LAST:event_backup_bt1ActionPerformed
+
+    private void backup_bt1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_backup_bt1StateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_backup_bt1StateChanged
+
+    private void backup_fieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_backup_fieldKeyReleased
+        // TODO add your handling code here:
+        try
+        {
+            int interval;
+            if(backup_field.getText().equals(""));
+            else
+            interval=Integer.parseInt(backup_field.getText());
+        }
+        catch(Exception e)
+        {
+            backup_field.setText(String.valueOf(DatabaseConstants.BACKUP_TIME));
+        }
+    }//GEN-LAST:event_backup_fieldKeyReleased
+
+    private void backup_fieldMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backup_fieldMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_backup_fieldMouseReleased
+
+    private void dinner_btActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dinner_btActionPerformed
+        // TODO add your handling code here:
+        if(dinner_bt.getText().equals("OFF"))
+        {
+            dinner_bt.setText("ON");
+        }
+        else
+        {
+            dinner_bt.setText("OFF");
+        }
+        /************************************/
+
+    }//GEN-LAST:event_dinner_btActionPerformed
+
+    private void dinner_btStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_dinner_btStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dinner_btStateChanged
+
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+        // TODO add your handling code here:
+        try
+        {
+            int interval;
+            if(jTextField1.getText().equals(""));
+            else
+            interval=Integer.parseInt(jTextField1.getText());
+        }
+        catch(Exception e)
+        {
+            jTextField1.setText(String.valueOf(DatabaseConstants.refresh_interval));
+        }
+    }//GEN-LAST:event_jTextField1KeyReleased
+
+    private void jTextField1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseReleased
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jTextField1MouseReleased
+
     private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
         // TODO add your handling code here:
         try{
-            String direct;
-            Database.CLOUD_info[0] = cloudip.getText();
-            Database.CLOUD_info[1] = clouddbname.getText();
-            Database.CLOUD_info[2] = username.getText();
-            Database.CLOUD_info[3] = password.getText();
-            Database.LAN_info[0] = LanIP.getText();
-            Database.LAN_info[1] = Landbname.getText();
-            if(directconn.isSelected()) {directcon =true; direct="yes";}
-            else {directcon = false; direct = "no";}
-            //insert settings in database
-            String query = "update admin_setting set cloud_ip ='"+Database.CLOUD_info[0]+"', cloud_db='"+Database.CLOUD_info[1]+"',cloud_username='"+Database.CLOUD_info[2]+"',cloud_password='"+Database.CLOUD_info[3]+"',lan_ip='"+Database.LAN_info[0]+"',lan_db='"+Database.LAN_info[1]+"',direct_conn='"+direct+"' where id_setting=1";
-            db.updata_query(query);
-            this.dispose();
+            if(jTextField1.getText().equals("") || backup_field.getText().equals("") || system_pw.getText().equals(""))
+            {
+                alert_frame obj = new alert_frame("Fill Backup Time and Refresh Time and system password");
+                obj.setVisible(true);
+            }
+            else
+            {
+                DatabaseConstants.refresh_interval=Integer.parseInt(jTextField1.getText());
+                DatabaseConstants.BACKUP_TIME = Integer.parseInt(backup_field.getText());
+                String direct;
+                Database.CLOUD_info[0] = cloudip.getText();
+                Database.CLOUD_info[1] = clouddbname.getText();
+                Database.CLOUD_info[2] = username.getText();
+                Database.CLOUD_info[3] = password.getText();
+                Database.LAN_info[0] = LanIP.getText();
+                Database.LAN_info[1] = Landbname.getText();
+                Data.system_password = system_pw.getText();
+                if(directconn.isSelected()) {directcon =true; direct="yes";}
+                else {directcon = false; direct = "no";}
+                if(server.isSelected()) IsServer = true;
+                else IsServer = false;
+                if(vip.isSelected()){isVip = true;
+                }
+                else {
+                    isVip = false;
+                }
+                //insert settings in database
+
+                if(dinner_bt.getText().equals("ON"))
+                {
+                    DatabaseConstants.DINNER_MODE=1;
+                }
+                else
+                {
+                    DatabaseConstants.DINNER_MODE=0;
+                }
+                if(backup_bt1.getText().equals("ON"))
+                {
+
+                    Backup.Server_mood=1;
+                    //Backup.first_time = true; //initialize database object
+                }
+                else
+                {
+
+                    Backup.Server_mood=0;
+
+                }
+
+                String query = "update "+DatabaseConstants.global_stt_table+" set cloud_ip ='"+Database.CLOUD_info[0]+"', cloud_db='"+Database.CLOUD_info[1]+"',cloud_username='"+Database.CLOUD_info[2]+"',cloud_password='"+Database.CLOUD_info[3]+"',lan_ip='"+Database.LAN_info[0]+"',lan_db='"+Database.LAN_info[1]+"',direct_conn='"+direct+"',backup_time="+DatabaseConstants.BACKUP_TIME+",refresh_time="+DatabaseConstants.refresh_interval+",backup="+Backup.Server_mood+",system_password='"+Data.system_password+"' where id_setting=1";
+                db.updata_query(query);
+
+                this.dispose();
+            }
         }catch(Exception e){
             alert_frame obj = new alert_frame(e.toString());
             obj.setVisible(true);
         }
-        
+
     }//GEN-LAST:event_SaveActionPerformed
 
     private void LandbnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LandbnameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_LandbnameActionPerformed
 
+    private void lanusernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lanusernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lanusernameActionPerformed
+
+    private void lanpassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lanpassActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lanpassActionPerformed
+
+    private void vipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vipActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_vipActionPerformed
+
+    private void serverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_serverActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton GetBaackup;
     private javax.swing.JTextField LanIP;
     private javax.swing.JTextField Landbname;
     private javax.swing.JButton Save;
+    private javax.swing.JButton SendBackup;
+    private javax.swing.JToggleButton backup_bt1;
+    private javax.swing.JTextField backup_field;
     private javax.swing.JLabel cloudIP;
     private javax.swing.JLabel cloudIP1;
     private javax.swing.JLabel cloudIP2;
@@ -238,11 +767,28 @@ public class Advanced_Settings extends javax.swing.JFrame {
     private javax.swing.JLabel cloudIP4;
     private javax.swing.JLabel cloudIP5;
     private javax.swing.JLabel cloudIP6;
+    private javax.swing.JLabel cloudIP7;
     private javax.swing.JTextField clouddbname;
     private javax.swing.JTextField cloudip;
+    private javax.swing.JToggleButton dinner_bt;
     private javax.swing.JRadioButton directconn;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField lanpass;
+    private javax.swing.JTextField lanusername;
     private javax.swing.JTextField password;
+    private javax.swing.JRadioButton server;
+    private javax.swing.JTextField system_pw;
     private javax.swing.JTextField username;
+    private javax.swing.JRadioButton vip;
     // End of variables declaration//GEN-END:variables
 }

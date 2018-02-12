@@ -5,6 +5,7 @@
  */
 package klydar_list;
 
+import java.awt.Toolkit;
 import java.sql.ResultSet;
 import javax.naming.spi.DirStateFactory;
 import javax.swing.JOptionPane;
@@ -20,6 +21,7 @@ public class attendance_percent extends javax.swing.JFrame {
      */
     public attendance_percent() {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
         //setLocationRelativeTo(null);
         
         //jProgressBar1.setValue(50);
@@ -27,6 +29,7 @@ public class attendance_percent extends javax.swing.JFrame {
     }
     public attendance_percent(Data ref) {
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
         setLocationRelativeTo(null);
         try
         {

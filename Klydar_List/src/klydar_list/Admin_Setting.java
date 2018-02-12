@@ -9,10 +9,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.List;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -34,26 +37,36 @@ public class Admin_Setting extends javax.swing.JFrame {
     ArrayList<String> dynamic_columns;
     static Data ref;
     int first_time = 0;//for combobox actions
+    Database db;
+
     public Admin_Setting() {
+        db = Data.db;
         initComponents();
         setLocationRelativeTo(null);
         dynamic_columns = new ArrayList<String>();
         setLocationRelativeTo(null);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
     }
-    public Admin_Setting(Data s)
-    {
-        try
-        {
+
+    public Admin_Setting(Data s) {
+        try {
+            db = s.db;
             //make initially table
             initComponents();
+            setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
             setLocationRelativeTo(null);
             dynamic_columns = new ArrayList<String>();
-            ref =s;
-            ResultSet rs = ref.db.select_query("select * from lists");
+            ref = s;
+            ResultSet rs = db.select_query("select * from lists");
             ResultSetMetaData metaData = rs.getMetaData();
             // add names of columns to ComboBox
-            for(int i=1 ; i<=metaData.getColumnCount() ; i++)
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 jComboBox1.addItem(metaData.getColumnName(i));
+                search_box.addItem(metaData.getColumnName(i));
+                filter1.addItem(metaData.getColumnName(i));
+                filter2.addItem(metaData.getColumnName(i));
+            }
+
             jComboBox1.removeItem("id");
             jComboBox1.removeItem("name");
             jComboBox1.removeItem("attendees");
@@ -62,38 +75,36 @@ public class Admin_Setting extends javax.swing.JFrame {
             dynamic_columns.add("attendees");
             dynamic_columns.add("type");
             dynamic_columns.add("sponsor");
+            dynamic_columns.add("mobile");
+            dynamic_columns.add("name_ar");
+            dynamic_columns.add("CME");
             set_style();
             KeyboardFocusManager.getCurrentKeyboardFocusManager()
-                .addKeyEventDispatcher(new KeyEventDispatcher() {
-              @Override
-              public boolean dispatchKeyEvent(KeyEvent e) {
-                if(e.getKeyCode()== KeyEvent.VK_DELETE )
-                {
-                    String column=jTable1.getColumnName(jTable1.getSelectedColumn());
-                        if(column.equals("attendees") || column.equals("id") || column.equals("name") || column.equals("type") || column.equals("sponsor"))
-                        {
-                            alert_frame af = new alert_frame("Primary Columns Not Allowed");
-                            af.setVisible(true);
+                    .addKeyEventDispatcher(new KeyEventDispatcher() {
+                        @Override
+                        public boolean dispatchKeyEvent(KeyEvent e) {
+                            if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                                String column = jTable1.getColumnName(jTable1.getSelectedColumn());
+                                if (column.equals("attendees") || column.equals("id") || column.equals("name") || column.equals("CME")) {
+                                    alert_frame af = new alert_frame("Primary Columns Not Allowed");
+                                    af.setVisible(true);
+                                } else {
+                                    dynamic_columns.remove(column);
+                                    set_style();
+                                }
+                            }
+                            return false;
                         }
-                        else
-                        {
-                            dynamic_columns.remove(column);
-                            set_style();
-                        }
-                }
-                return false;
-              }
-                });
-        }
-        catch(Exception e)
-        {
-            
+                    });
+        } catch (Exception e) {
+
         }
     }//end Admin_Setting
-     public void action_cell_admin()
-    {
-        
+
+    public void action_cell_admin() {
+
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -104,26 +115,25 @@ public class Admin_Setting extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jPanel2 = new javax.swing.JPanel();
+        search_box = new javax.swing.JComboBox<>();
+        items = new javax.swing.JComboBox<>();
+        submit_table1 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        filter2 = new javax.swing.JComboBox<>();
+        filter1 = new javax.swing.JComboBox<>();
+        sub_filter = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
         submit_table = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Admin Setting");
         setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Columns", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -135,56 +145,198 @@ public class Admin_Setting extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setBackground(new java.awt.Color(230, 230, 230));
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jTextArea1.setForeground(new java.awt.Color(102, 102, 102));
-        jTextArea1.setRows(5);
-        jTextArea1.setText("(Steps To Build Your Table)\nSelect Column and it will be added to table\nSort It\nSumbit Your Table\n\nNote : id,name,attendees,type,sponsor are \nprimary columns");
-        jScrollPane2.setViewportView(jTextArea1);
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Search", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
 
-        submit_table.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        search_box.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        search_box.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Search Columns", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+        search_box.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                search_boxActionPerformed(evt);
+            }
+        });
+
+        items.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        items.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Items", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+        items.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemsActionPerformed(evt);
+            }
+        });
+
+        submit_table1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        submit_table1.setForeground(new java.awt.Color(51, 51, 51));
+        submit_table1.setText("Submit Search");
+        submit_table1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submit_table1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(items, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(search_box, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(submit_table1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(items, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(search_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(submit_table1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Filters", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
+
+        filter2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        filter2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "filter2", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+        filter2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filter2ActionPerformed(evt);
+            }
+        });
+
+        filter1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        filter1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Filter 1", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+        filter1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                filter1MousePressed(evt);
+            }
+        });
+        filter1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                filter1ItemStateChanged(evt);
+            }
+        });
+        filter1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filter1ActionPerformed(evt);
+            }
+        });
+
+        sub_filter.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        sub_filter.setForeground(new java.awt.Color(51, 51, 51));
+        sub_filter.setText("Submit Filters");
+        sub_filter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sub_filterActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(filter2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(filter1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(sub_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(425, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(filter2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(filter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(sub_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(27, Short.MAX_VALUE))
+        );
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Table", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
+
+        submit_table.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         submit_table.setForeground(new java.awt.Color(51, 51, 51));
-        submit_table.setText("Submit");
+        submit_table.setText("Submit Table");
         submit_table.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 submit_tableActionPerformed(evt);
             }
         });
 
+        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jComboBox1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Columns", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 14))); // NOI18N
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(submit_table, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(447, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(submit_table, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(141, 141, 141)
-                .addComponent(submit_table, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1)
+                        .addGap(10, 10, 10))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(submit_table, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+                .addGap(222, 222, 222)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(41, 41, 41)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(512, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -195,7 +347,7 @@ public class Admin_Setting extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -203,160 +355,195 @@ public class Admin_Setting extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
-        try
-        {
+        try {
             //check if column already found
-            int column_added_before=0;
-            if(first_time >1 )
-            {
+            int column_added_before = 0;
+            if (first_time > 1) {
                 String column_selected = jComboBox1.getSelectedItem().toString();
-                for(int i=0 ; i<dynamic_columns.size() ; i++)
-                {
-                    if(dynamic_columns.get(i).equals(column_selected))
-                    {
-                        column_added_before=1;
+                for (int i = 0; i < dynamic_columns.size(); i++) {
+                    if (dynamic_columns.get(i).equals(column_selected)) {
+                        column_added_before = 1;
                         alert_frame af = new alert_frame("Column Already Added");
                         af.setVisible(true);
                     }
                 }
-                if(column_added_before == 0)
-                {
+                if (column_added_before == 0) {
                     dynamic_columns.add(column_selected);
                     //add selected column from list to table
                     set_style();
                 }
             }//end if
-            else
-            {
+            else {
                 first_time++;
             }//end else
         }//end try
-        catch(Exception e)
-        {
+        catch (Exception e) {
             //end 
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void submit_tableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submit_tableActionPerformed
         // TODO add your handling code here:
-        try
-        {
+        try {
             //check for columns id , name , attendees first
-            if(jTable1.getColumnName(0).equals("id") && jTable1.getColumnName(1).equals("name") && jTable1.getColumnName(2).equals("attendees"))
-            {
-                String columns="";
-                String Base_query="";
+            if (jTable1.getColumnName(0).equals("id") && jTable1.getColumnName(1).equals("name") && jTable1.getColumnName(2).equals("attendees")) {
+                String columns = "";
+                String Base_query = "";
                 //sort table in dynamic column list as appear in Gui
                 dynamic_columns.removeAll(dynamic_columns);
-                for(int k=0 ; k<jTable1.getColumnCount() ; k++)
-                { 
+                for (int k = 0; k < jTable1.getColumnCount(); k++) {
                     dynamic_columns.add(jTable1.getColumnName(k));
                 }
-                columns+=dynamic_columns;
-                Base_query="select "+columns+" from lists";
-                Base_query=Base_query.replace("[", "");
-                Base_query=Base_query.replace("]", "");
-                ref.db.updata_query("update admin_setting set column_setting ='"+Base_query+"' where id_setting='1'");
+                columns += dynamic_columns;
+                Base_query = "select " + columns + " from lists";
+                Base_query = Base_query.replace("[", "");
+                Base_query = Base_query.replace("]", "");
+                db.updata_query("update " + DatabaseConstants.global_stt_table + " set column_setting ='" + Base_query + "' where id_setting='1'");
                 correct_frame cf = new correct_frame("Table Uploaded successfully");
                 cf.setVisible(true);
-            }
-            else
-            {
+            } else {
                 alert_frame af = new alert_frame("Table Should Be id , name , attendees ....");
                 af.setVisible(true);
             }
         }//end try
-        catch(Exception exx)
-        {
-           alert_frame af = new alert_frame("Error In DataBase");
-           af.setVisible(true);
+        catch (Exception exx) {
+            alert_frame af = new alert_frame("Error In DataBase");
+            af.setVisible(true);
         }
     }//GEN-LAST:event_submit_tableActionPerformed
-    public void set_style()
-    {
-         jTable1 = new JTable(buildTableModel(dynamic_columns));
+
+    private void search_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_boxActionPerformed
+        // TODO add your handling code here:
+        int validate = 1;
+        for (int i = 0; i < items.getItemCount(); i++) {
+            if (items.getItemAt(i).equals(search_box.getSelectedItem().toString())) {
+                alert_frame s = new alert_frame("Already Found");
+                s.setVisible(true);
+                validate = 0;
+            }
+        }//end loop
+        if (validate == 1) {
+            items.addItem(search_box.getSelectedItem().toString());
+        }
+    }//GEN-LAST:event_search_boxActionPerformed
+
+    private void itemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemsActionPerformed
+
+    private void submit_table1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submit_table1ActionPerformed
+        // TODO add your handling code here:
+        String all_items = "";
+        for (int i = 0; i < items.getItemCount(); i++) {
+            String column_name = items.getItemAt(i);
+            StringBuilder myName = new StringBuilder(column_name);
+            myName.setCharAt(0, Character.toUpperCase(column_name.charAt(0)));
+            column_name = myName.toString();
+            if (i == 0) {
+                all_items += column_name;
+            } else {
+                all_items += ",";
+                all_items += column_name;
+            }
+        }
+        db.updata_query("update global_settings set search='" + all_items + "' where id_setting='1'");
+        correct_frame s = new correct_frame("Done");
+        s.setVisible(true);
+        ArrayList<String> search_items
+                = new ArrayList<String>(Arrays.asList(all_items.split(",")));
+        
+    }//GEN-LAST:event_submit_table1ActionPerformed
+
+    private void filter2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filter2ActionPerformed
+
+    private void filter1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filter1MousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filter1MousePressed
+
+    private void filter1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filter1ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filter1ItemStateChanged
+
+    private void filter1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filter1ActionPerformed
+
+    private void sub_filterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sub_filterActionPerformed
+        // TODO add your handling code here:
+        
+        String filter_name2 = filter2.getSelectedItem().toString();
+        String filter_name1 = filter1.getSelectedItem().toString();
+        if (DatabaseConstants.all_data.contains(filter_name1) && DatabaseConstants.all_data.contains(filter_name2)) {
+            db.updata_query("update " + DatabaseConstants.global_stt_table + " set filter1='" + filter_name1 + "',filter2 ='"+filter_name2+"' where id_setting=1");
+            correct_frame alert = new correct_frame("Done refresh the system to make effect");
+            alert.setVisible(true);
+        } else {
+            alert_frame alert = new alert_frame("You must choose filter exist in the table");
+            alert.setVisible(true);
+        }
+    }//GEN-LAST:event_sub_filterActionPerformed
+    public void set_style() {
+        jTable1 = new JTable(buildTableModel(dynamic_columns));
         jScrollPane1.setViewportView(jTable1);
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         jTable1.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 20));
-        for(int i=0 ; i<jTable1.getColumnCount() ; i++)
-        jTable1.getColumnModel().getColumn(i).setMinWidth(130);
+        for (int i = 0; i < jTable1.getColumnCount(); i++) {
+            jTable1.getColumnModel().getColumn(i).setMinWidth(130);
+        }
         jTable1.setRowHeight(40);
         JTableHeader header = jTable1.getTableHeader();
-        header.setBackground(ref.white_blue );
+        header.setBackground(ref.white_blue);
         header.setForeground(Color.WHITE);
         action_cell_admin();
     }//end
+
     /**
      * @param args the command line arguments
      */
-    public static DefaultTableModel buildTableModel(ArrayList arr)
-       {
-           Vector<String> columnNames = null;
-           Vector<Vector<Object>> data = null;
-           try
-           {
-               
-                // names of columns
-                 columnNames = new Vector<String>();
-                for (int column = 0; column <arr.size(); column++) {
-
-                    columnNames.add(arr.get(column).toString());
-                }
-                // data of the table
-                data = new Vector<Vector<Object>>();
-                 Vector<Object> vector = new Vector<Object>();
-                for (int columnIndex = 0; columnIndex <arr.size(); columnIndex++) {
-                    vector.add("");
-                }
-                data.add(vector);
-            }
-            catch(Exception e)
-            {
-                System.out.println(e);
-                //nothing
-            }
-            return new DefaultTableModel(data, columnNames);
-
-        }
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    public static DefaultTableModel buildTableModel(ArrayList arr) {
+        Vector<String> columnNames = null;
+        Vector<Vector<Object>> data = null;
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Admin_Setting.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Admin_Setting.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Admin_Setting.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Admin_Setting.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Admin_Setting().setVisible(true);
+            // names of columns
+            columnNames = new Vector<String>();
+            for (int column = 0; column < arr.size(); column++) {
+
+                columnNames.add(arr.get(column).toString());
             }
-        });
+            // data of the table
+            data = new Vector<Vector<Object>>();
+            Vector<Object> vector = new Vector<Object>();
+            for (int columnIndex = 0; columnIndex < arr.size(); columnIndex++) {
+                vector.add("");
+            }
+            data.add(vector);
+        } catch (Exception e) {
+            System.out.println(e);
+            //nothing
+        }
+        return new DefaultTableModel(data, columnNames);
+
     }
 
+   
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> filter1;
+    private javax.swing.JComboBox<String> filter2;
+    private javax.swing.JComboBox<String> items;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JComboBox<String> search_box;
+    private javax.swing.JButton sub_filter;
     private javax.swing.JButton submit_table;
+    private javax.swing.JButton submit_table1;
     // End of variables declaration//GEN-END:variables
 }

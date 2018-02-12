@@ -1,0 +1,6 @@
+cloudIP=192.185.78.63:3306 
+cloudDataBaseName=ab282_cm
+cloudUserName=ab282_admin 
+cloudPassword=123qweasdzxc
+lanIp=192.168.1.10:3306
+lanDatabaseName=klydar_cm

@@ -27,12 +27,13 @@ public class Database {
     Connection cn;
     Statement st;
     //specify IP->0 DB Name->1
-    public static String [] LAN_info = {"192.168.1.107:3306","klydar_cm"};
+    public static String [] LAN_info = {"192.168.1.10:3306","klydar_cm"};
     public static String LAN;
     //Cloud info IP->0 , DB Name->1 , username->2 , password->3
-    public static String[] CLOUD_info = {"192.185.13.161:3306","klydar_cm","klydar","&?f2~PPhXwqd"};
+    public static String[] CLOUD_info = {"192.185.78.63:3306","ab282_cm","ab282_admin","123qweasdzxc"};
     public static String CLOUD;
-    public static String LOCAL = "jdbc:mysql://localhost:3306/klydar_cm?zeroDateTimeBehavior=convertToNull";
+    public static String LOCAL = "jdbc:mysql://localhost:3306/klydar_cm?characterEncoding=utf8";
+    public boolean isCloud = false;
     //HttpURLConnection con;
     //URL url;
     DatabaseMetaData dm;
@@ -47,24 +48,28 @@ public class Database {
         {
             alert_frame obj = new alert_frame("Failure to connect to the server");
             obj.setVisible(true);
-            
         }
     }//end connection
     public ResultSet select_query(String query) 
     {
+                   
+
         ResultSet rs = null;
         try
         {
         if(!cn.isValid(2)){
            connectToCloud();
         }
+        
         Statement ste= cn.createStatement();
         rs = ste.executeQuery(query);
+        
         return rs;
         }
         catch(Exception e)
         {
-           alert_frame obj = new alert_frame("Failure to update Cell in the server");
+            
+           alert_frame obj = new alert_frame("Failure to Select Cell from server");
            obj.setVisible(true); 
         }
         return rs;
@@ -77,25 +82,31 @@ public class Database {
                connectToCloud();
                  }
             Statement ste= cn.createStatement();
+            
             ste.executeUpdate(query);
         }
         catch(Exception e)
         {   
-            alert_frame obj = new alert_frame("Failure to update Cell in the server");
-            obj.setVisible(true);
+            JOptionPane.showMessageDialog(null, e);
+            //alert_frame obj = new alert_frame("Failure to update Cell in the server");
+            //obj.setVisible(true);
+            
         }   
     }//end update query 
     //function to connect to speific database 
+     
     public void connectToCloud(){
         try{
-         CLOUD ="jdbc:mysql://"+CLOUD_info[0]+"/"+CLOUD_info[1]+"?zeroDateTimeBehavior=convertToNull";
-         this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);   
+         CLOUD ="jdbc:mysql://"+CLOUD_info[0]+"/"+CLOUD_info[1]+"?characterEncoding=utf8";
+         this.cn = DriverManager.getConnection(CLOUD,CLOUD_info[2],CLOUD_info[3]);
+         isCloud = true; // used to know if it' success to access cloud 
         }catch(Exception ex){
             try{
-            alert_frame obj = new alert_frame("failure to Connect to CLOUD server");
-            obj.setVisible(true);
-            cn = DriverManager.getConnection(LOCAL,"root","");
-            st=cn.createStatement();
+            isCloud = false; 
+            //System.out.println(ex);
+            //alert_frame obj = new alert_frame("failure to Connect to CLOUD server");
+            //obj.setVisible(true);
+            connectToLan();
         }
         catch(Exception e){
             alert_frame obj = new alert_frame("Failure to connect to Localhost");
@@ -108,31 +119,59 @@ public class Database {
          LAN = "jdbc:mysql://"+LAN_info[0]+"/"+LAN_info[1]+"?zeroDateTimeBehavior=convertToNull";
          this.cn = DriverManager.getConnection(LAN);  
         }catch(Exception ex){
-            alert_frame obj = new alert_frame("Failure to connect LAN Server");
-            obj.setVisible(true);
+           // alert_frame obj = new alert_frame("Failure to connect to LAN Server");
+            //obj.setVisible(true);
+            try{cn = DriverManager.getConnection(LOCAL,"root","");}
+            catch(Exception e){
+            Klydar_List.data_list.set_connection_type("No Internet");
+            }//obj = new alert_frame("Failure to connect to LAN Server"); obj.setVisible(true);
         }
+    }
+    public char connection_type(){
+        try {
+            
+            dm = cn.getMetaData();
+            String cloudName ="klydar_cm@156.209.186.29";
+            String networkName = "@";
+            String localName = "root@localhost";
+            String dbname = dm.getUserName();
+            
+            if (dbname.equals(networkName)) return 'N';
+            else if (dbname.equals(localName)) return 'L';
+            else return 'C';
+        } catch (SQLException ex) {
+            connectToCloud();
+            connection_type();
+            //System.out.println("Connection Type:"+ ex);
+        }
+    return 'F';
     }
      public void switch_to_local(int choice){ // take the choice of the connection -> {Localhost , Cloud , LAN connection}
- try {
-    if(choice == 0){//conncet to the localhost
-    cn = DriverManager.getConnection(LOCAL,"root","");
-    
-        }
-    else if (choice == 1){ //connect to the cloud
-       connectToCloud();
-    }
-    else if(choice == 2){//lan connection    
-        connectToLan();
+        try {
+            wait_thread.wf.setVisible(true);
+            if(choice == 0){//conncet to the localhost
+                
+            cn = DriverManager.getConnection(LOCAL,"root","");
+            
+                }
+            else if (choice == 1){ //connect to the cloud
+               connectToCloud();
+               
             }
-    } catch (Exception ex) {
-    JOptionPane.showMessageDialog(null,"Problem with The connection you choosed "+ ex);
-}
-    
-     }
+            else if(choice == 2){//lan connection    
+                connectToLan();
+                
+                    }
+            wait_thread.wf.setVisible(false);
+        } catch (Exception ex) {
+        JOptionPane.showMessageDialog(null,"Problem with The connection you choosed "+ ex);
+    }
+
+         }
      public void close_db(){
         try {
             cn.close();
-        } catch (SQLException ex) {
+        } catch (SQLException ex){
             JOptionPane.showMessageDialog(null, ex);
         }
      }

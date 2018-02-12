@@ -1,0 +1,269 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package klydar_list.report;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.util.ArrayList;
+import java.util.Random;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+
+/**
+ *
+ * @author Klydar
+ */
+public class report_gui extends javax.swing.JFrame {
+
+    /**
+     * Creates new form report_gui
+     */
+    public report_gui() {
+        initComponents();
+        setLocationRelativeTo(null);
+        display_all_att_types();
+        display_all_no_actions();
+    }
+    /***************************************************/
+    public void display_all_att_types()
+    {
+        int start=0;
+        ArrayList all_types = report.get_all_types();
+        for(int i=0 ; i<all_types.size() ; i++)
+        {
+            Random rand = new Random();
+            float r = rand.nextFloat();
+            float g = rand.nextFloat();
+            float b = rand.nextFloat();
+            final JProgressBar c = new JProgressBar();
+            c.setVisible(true);
+            c.setBounds(20, start+=50, 10, 10);
+            c.setSize(200, 40);
+            c.setName(all_types.get(i).toString());
+            //to get name when mouse clicked on it
+            c.setBorder(new TitledBorder(""+all_types.get(i)));
+            c.setForeground(new Color(r,g,b));
+            types_panel.add(c);
+            c.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent me) {
+                    String type = c.getName();     
+                    ArrayList value = report.get_perc(type);
+                    c.setValue(Integer.parseInt(value.get(0).toString()));
+                    c.setBorder(new TitledBorder(type + "      "  + value.get(0)+"%" + "      " + value.get(2) + " (" +value.get(1)+")"));
+                }
+                @Override
+                public void mousePressed(MouseEvent me) {
+                }
+                @Override
+                public void mouseReleased(MouseEvent me) {
+                }
+                @Override
+                public void mouseEntered(MouseEvent me) {
+                }
+                @Override
+                public void mouseExited(MouseEvent me) {
+                }
+            });
+        }//end loop on type
+    }//end fun
+    /***************************************************/
+    public void display_all_no_actions()
+    {
+        int start=0;
+        ArrayList all_types = report.get_all_statistics();
+        for(int i=0 ; i<all_types.size() ; i++)
+        {
+            Random rand = new Random();
+            float r = rand.nextFloat();
+            float g = rand.nextFloat();
+            float b = rand.nextFloat();
+            final JProgressBar no_ac = new JProgressBar();
+            no_ac.setVisible(true);
+            no_ac.setBounds(20, start+=50, 10, 10);
+            no_ac.setSize(200, 40);
+            no_ac.setName(all_types.get(i).toString());
+            //to get name when mouse clicked on it
+            no_ac.setBorder(new TitledBorder(""+all_types.get(i)));
+            no_ac.setForeground(new Color(r,g,b));
+            types_panel1.add(no_ac);
+            no_ac.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent me) {
+                    String type = no_ac.getName();     
+                    ArrayList value = report.get_perc_actions(type);
+                    no_ac.setBorder(new TitledBorder(type + "      "  + value.get(0)+"%" + "      " + value.get(2) + " (" +value.get(1)+")"));
+                    no_ac.setValue(Integer.parseInt(value.get(0).toString()));
+                }
+                @Override
+                public void mousePressed(MouseEvent me) {
+                }
+                @Override
+                public void mouseReleased(MouseEvent me) {
+                }
+                @Override
+                public void mouseEntered(MouseEvent me) {
+                }
+                @Override
+                public void mouseExited(MouseEvent me) {
+                }
+            });
+        }//end loop on type
+    }//end function
+     /***************************************************/
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        att_list = new javax.swing.JScrollPane();
+        types_panel = new javax.swing.JPanel();
+        att_list1 = new javax.swing.JScrollPane();
+        types_panel1 = new javax.swing.JPanel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Reports");
+        setResizable(false);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        att_list.setBackground(new java.awt.Color(204, 204, 204));
+
+        types_panel.setBackground(new java.awt.Color(255, 255, 255));
+        types_panel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Attendees", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
+        types_panel.setAutoscrolls(true);
+
+        javax.swing.GroupLayout types_panelLayout = new javax.swing.GroupLayout(types_panel);
+        types_panel.setLayout(types_panelLayout);
+        types_panelLayout.setHorizontalGroup(
+            types_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 287, Short.MAX_VALUE)
+        );
+        types_panelLayout.setVerticalGroup(
+            types_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 509, Short.MAX_VALUE)
+        );
+
+        att_list.setViewportView(types_panel);
+
+        att_list1.setBackground(new java.awt.Color(204, 204, 204));
+
+        types_panel1.setBackground(new java.awt.Color(255, 255, 255));
+        types_panel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Statistics", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 18))); // NOI18N
+        types_panel1.setAutoscrolls(true);
+
+        javax.swing.GroupLayout types_panel1Layout = new javax.swing.GroupLayout(types_panel1);
+        types_panel1.setLayout(types_panel1Layout);
+        types_panel1Layout.setHorizontalGroup(
+            types_panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 288, Short.MAX_VALUE)
+        );
+        types_panel1Layout.setVerticalGroup(
+            types_panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 509, Short.MAX_VALUE)
+        );
+
+        att_list1.setViewportView(types_panel1);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(att_list, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                .addComponent(att_list1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(att_list1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(att_list, javax.swing.GroupLayout.PREFERRED_SIZE, 525, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(568, 568, 568))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 1, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(report_gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(report_gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(report_gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(report_gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new report_gui().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane att_list;
+    private javax.swing.JScrollPane att_list1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel types_panel;
+    private javax.swing.JPanel types_panel1;
+    // End of variables declaration//GEN-END:variables
+}
