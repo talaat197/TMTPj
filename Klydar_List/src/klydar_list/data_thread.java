@@ -5,6 +5,7 @@
  */
 package klydar_list;
 
+import Network.Server_Thread;
 import javax.swing.JOptionPane;
 import static klydar_list.Klydar_List.data_list;
 
@@ -17,7 +18,9 @@ import static klydar_list.Klydar_List.data_list;
         private Thread refresh;
         private refresh_thread ref_obj;
         public String UType;
-        public data_thread(Thread refresh_th,refresh_thread ref_obj,String user_type){
+        private Server_Thread th_st;
+        public data_thread(Thread refresh_th,refresh_thread ref_obj,String user_type ,Server_Thread th_st){
+            this.th_st = th_st;
             this.ref_obj = ref_obj;
             UType = user_type;
             refresh = refresh_th;
@@ -27,7 +30,7 @@ import static klydar_list.Klydar_List.data_list;
         {
             try
             {
-            data_list = new Data(refresh,UType,ref_obj);
+            data_list = new Data(refresh,UType,ref_obj,th_st);
             data_list.setVisible(true);
             }
                 catch (Exception ex) {

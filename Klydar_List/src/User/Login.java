@@ -5,6 +5,8 @@
  */
 package User;
 
+import Network.Server;
+import Network.Server_Thread;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
@@ -49,7 +51,8 @@ public class Login extends javax.swing.JFrame {
     public static int allow_add = 0;
     public static int allow_print_cme = 0;
     public static int allow_update = 0;
-
+    private int port_number;
+    Thread th_st; // thread for server_thread
     public Login() throws InterruptedException {
         try{
         
@@ -61,9 +64,9 @@ public class Login extends javax.swing.JFrame {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("logo.png")));
         get_configuration();
         conn = new Database();
-        
         get_global_settings();
-
+        
+        
         wait_thread.wf.setVisible(false);
         }
         catch(Exception e){
@@ -211,24 +214,23 @@ public class Login extends javax.swing.JFrame {
             Database.CLOUD_info[3] = all_configuration.get(3);
             Database.LAN_info[0] = all_configuration.get(4);
             Database.LAN_info[1] = all_configuration.get(5);
-
+            //System.out.println(Database.LAN_info[0]+"///// "+Database.LAN_info[1]);
         } catch (IOException e) {
             alert_frame obj = new alert_frame("configuration file not found");
             obj.setVisible(true);
         }
     }
 
-    public void get_global_settings() {
+    public void get_global_settings(){
         try {
-
             ResultSet ad_s = conn.select_query("select * from " + DatabaseConstants.global_stt_table + " where id_setting='1'");
-            if (ad_s.next()) {
-                Database.CLOUD_info[0] = ad_s.getString("cloud_ip");
+            if (ad_s.next()){
+                /*Database.CLOUD_info[0] = ad_s.getString("cloud_ip");
                 Database.CLOUD_info[1] = ad_s.getString("cloud_db");
                 Database.CLOUD_info[2] = ad_s.getString("cloud_username");
                 Database.CLOUD_info[3] = ad_s.getString("cloud_password");
                 Database.LAN_info[0] = ad_s.getString("lan_ip");
-                Database.LAN_info[1] = ad_s.getString("lan_db");
+                Database.LAN_info[1] = ad_s.getString("lan_db"); */
                 DatabaseConstants.BACKUP_TIME = ad_s.getInt("backup_time");
                 DatabaseConstants.refresh_interval = ad_s.getInt("refresh_time");
                 Backup.Server_mood = ad_s.getInt("backup");
@@ -247,7 +249,8 @@ public class Login extends javax.swing.JFrame {
                 }
                 String setting = ad_s.getString("column_setting");
                 DatabaseConstants.all_data = setting;
-                conn.switch_to_local(1);//connect to cloud 
+                
+                //conn.switch_to_local(1);//connect to cloud 
 
             }
         } catch (Exception e) {
@@ -273,7 +276,11 @@ public class Login extends javax.swing.JFrame {
         String name = username.getText();
         String pass = password.getText();
         String query = "select * from user_settings where username = '" + name + "' and password = '" + pass + "'";
+        String update_query;
+        String IP;
         try {
+            
+            
             ResultSet result = conn.select_query(query);
             if (result.first()) {
                 if (result.getInt("block") == 1) {
@@ -286,6 +293,7 @@ public class Login extends javax.swing.JFrame {
                 allow_add = result.getInt("addUser");
                 allow_print_cme = result.getInt("allow_cme");
                 allow_update = result.getInt("update_users");
+                port_number= result.getInt("port");
                 //is he stand with cip area or not 
                 if (result.getInt("vip") == 1) {
                     Advanced_Settings.isVip = true;
@@ -304,6 +312,9 @@ public class Login extends javax.swing.JFrame {
                     Website_form web = new Website_form("http://think-ds.com/projects/signing_io/public/admin/signing?hall_id=7", 0);
                     web.display();
                 }
+                IP = Server.get_ip();
+                update_query = "Update "+DatabaseConstants.user_Settings+" SET ip='"+IP+"' WHERE username = '"+name+"'";
+                conn.updata_query(update_query);
                 conn.close_db();
                 this.dispose();
 
@@ -314,6 +325,7 @@ public class Login extends javax.swing.JFrame {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
+        
     }//GEN-LAST:event_loginActionPerformed
 
     private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
@@ -332,16 +344,24 @@ public class Login extends javax.swing.JFrame {
     private void start_frame() {
         refresh_thread rt = new refresh_thread();
         Thread refresh = new Thread((Runnable) rt);
-        // wait_thread wt=new wait_thread();
-        data_thread dt = new data_thread(refresh, rt, authorized);
+        
+        Server_Thread st = new Server_Thread(port_number);
+        th_st = new Thread(st);
+        
+        
+        data_thread dt = new data_thread(refresh, rt, authorized,st);
         Thread data_list = new Thread((Runnable) dt);
+        
         Backup ba = new Backup();
         Thread backup = new Thread((Runnable) ba);
+        
+        
         //Thread waiting = new Thread(wt);
         //waiting.start();
         refresh.start();
         data_list.start();
         backup.start();
+        th_st.start();//start the chat server
         //wait_thread.wf.setVisible(false);
     }
 

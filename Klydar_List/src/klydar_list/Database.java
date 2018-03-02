@@ -27,7 +27,7 @@ public class Database {
     Connection cn;
     Statement st;
     //specify IP->0 DB Name->1
-    public static String [] LAN_info = {"192.168.1.10:3306","klydar_cm"};
+    public static String [] LAN_info = {"192.168.1.142:3306","klydar_cm"};
     public static String LAN;
     //Cloud info IP->0 , DB Name->1 , username->2 , password->3
     public static String[] CLOUD_info = {"192.185.78.63:3306","ab282_cm","ab282_admin","123qweasdzxc"};
@@ -87,9 +87,9 @@ public class Database {
         }
         catch(Exception e)
         {   
-            JOptionPane.showMessageDialog(null, e);
-            //alert_frame obj = new alert_frame("Failure to update Cell in the server");
-            //obj.setVisible(true);
+            //JOptionPane.showMessageDialog(null, e);
+            alert_frame obj = new alert_frame("Failure to update Data in the server");
+            obj.setVisible(true);
             
         }   
     }//end update query 
@@ -106,9 +106,11 @@ public class Database {
             //System.out.println(ex);
             //alert_frame obj = new alert_frame("failure to Connect to CLOUD server");
             //obj.setVisible(true);
+            
             connectToLan();
         }
         catch(Exception e){
+            
             alert_frame obj = new alert_frame("Failure to connect to Localhost");
             obj.setVisible(true);
             }
@@ -116,12 +118,14 @@ public class Database {
     }
     public void connectToLan(){
         try{
-         LAN = "jdbc:mysql://"+LAN_info[0]+"/"+LAN_info[1]+"?zeroDateTimeBehavior=convertToNull";
+         LAN = "jdbc:mysql://"+LAN_info[0]+"/"+LAN_info[1]+"?characterEncoding=utf8";
          this.cn = DriverManager.getConnection(LAN);  
         }catch(Exception ex){
            // alert_frame obj = new alert_frame("Failure to connect to LAN Server");
             //obj.setVisible(true);
-            try{cn = DriverManager.getConnection(LOCAL,"root","");}
+            try{cn = DriverManager.getConnection(LOCAL,"root","");
+            //System.out.println(LAN);
+            }
             catch(Exception e){
             Klydar_List.data_list.set_connection_type("No Internet");
             }//obj = new alert_frame("Failure to connect to LAN Server"); obj.setVisible(true);

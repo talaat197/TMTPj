@@ -139,8 +139,8 @@ public class Check_in_out extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         try {
-            String datetime = get_datetime();
-            String query = "update lists SET in_out=0,out_time ='" + datetime + "',CME=CEIL(TIME_TO_SEC(TIMEDIFF(out_time,in_time))/(60))+CME WHERE in_out = 1";
+//            String datetime = get_datetime();
+            String query = "update lists SET in_out=0,out_time =NOW(),CME=CEIL(TIME_TO_SEC(TIMEDIFF(out_time,in_time))/(60))+CME WHERE in_out = 1";
             klydar_list.Klydar_List.data_list.VUpdate_Data(query);
         } catch (Exception e) {
 
@@ -161,10 +161,10 @@ public class Check_in_out extends javax.swing.JFrame {
             if (result.next()) {
                 if (result.getInt("in_out") == 0) {
 
-                    query = "UPDATE lists SET in_out=1,in_time='" + datetime + "' where id=" + user_id + "";
+                    query = "UPDATE lists SET in_out=1,in_time=NOW(),attendees=1 where id=" + user_id + "";
                     klydar_list.Klydar_List.data_list.VUpdate_Data(query);
                 } else {
-                    query = "update lists SET in_out=0,out_time ='" + datetime + "',CME=CEIL(TIME_TO_SEC(TIMEDIFF(out_time,in_time))/(60))+CME WHERE id =" + user_id + "";
+                    query = "update lists SET in_out=0,out_time =NOW(),CME=CEIL(TIME_TO_SEC(TIMEDIFF(out_time,in_time))/(60))+CME WHERE id =" + user_id + "";
 
                     klydar_list.Klydar_List.data_list.VUpdate_Data(query);
                 }

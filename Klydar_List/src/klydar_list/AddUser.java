@@ -35,6 +35,7 @@ public class AddUser extends javax.swing.JFrame {
     int id;
     long mob;
     static AddUser old_frame = null;
+    private boolean error_flag = true;
 
     public AddUser(Data s) {
         if (old_frame == null) {
@@ -469,18 +470,25 @@ public class AddUser extends javax.swing.JFrame {
     private void add_printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_printActionPerformed
         try {
             add_new();
-            query = "select id from lists where name='" + name + "' && mobile='" + mob + "'";
+            
+            query = "select MAX(id) as ID from lists where name='" + name + "' and mobile='" + mob + "'";
             ResultSet id_data = db.select_query(query);
+            
             if (id_data.next()) {
-                id = id_data.getInt("ID");
                 
+                id = id_data.getInt("ID");
+
+            }
+            //check if no error happen in add_new func
+            
+            if (error_flag == true) {
+                Directprint print = new Directprint(0);
+                print.barcode_generate(Integer.toString(id));
+                print.printString(name);
             }
 
-            Directprint print = new Directprint(0);
-            print.barcode_generate(Integer.toString(id));
-            print.printString(name);
-
         } catch (Exception e) {
+            
         }
     }//GEN-LAST:event_add_printActionPerformed
 
@@ -525,7 +533,11 @@ public class AddUser extends javax.swing.JFrame {
                 return;
             }
             name = name_field.getText();
-            mob = Long.parseLong(mob_field.getText());
+            
+            if (!mob_field.getText().equals("")) {
+                mob = Long.parseLong(mob_field.getText());
+            }
+
             String Email = mail_field.getText();
             String Sponsor = sponsor_field.getText();
             String inst = instituation.getText();
@@ -533,8 +545,14 @@ public class AddUser extends javax.swing.JFrame {
             String Address = address.getText();
             String spec = specality_list.getSelectedItem().toString();
             String type = type_list.getSelectedItem().toString();
+            if(name.equals("") || name.equals(" ")){
+                design.set_alert_message(jTextField1, "Please Insert the name");
+                error_flag = false; // don't print
+                return;
+            }
             if (valid && (name.equals("") || Email.equals("") || Sponsor.equals("") || inst.equals("") || prof.equals("") || Address.equals(""))) {
                 design.set_alert_message(jTextField1, "Please Fill All Data");
+                error_flag = false; // don't print
             }//end validate
             else {
                 String query = "INSERT INTO `lists` (`name`,`type`,`mobile`, `email`,`address`, `sponsor`,`Profession`,`Institution`, `speciality`,`connection`)"
@@ -550,12 +568,15 @@ public class AddUser extends javax.swing.JFrame {
                 instituation.setText("");
                 profession.setText("");
                 address.setText("");
+                error_flag = true;
             }
         }//end try
         catch (NumberFormatException e) {
             design.set_alert_message(jTextField1, "Check Mobile Number");
+            error_flag = false;
         } catch (Exception exx) {
             design.set_alert_message(jTextField1, "Invalid Data");
+            error_flag = false;
         }
     }
 

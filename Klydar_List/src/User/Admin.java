@@ -29,6 +29,7 @@ import klydar_list.DatabaseConstants;
 import klydar_list.Klydar_List;
 import klydar_list.alert_frame;
 import klydar_list.Data;
+import klydar_list.correct_frame;
 
 /**
  *
@@ -43,7 +44,7 @@ public class Admin extends javax.swing.JFrame {
     ResultSet rs;
     String query = "Select * from " + DatabaseConstants.user_Settings + "";
     JTable users = new JTable();
-    
+
     public Admin() {
         initComponents();
         setLocationRelativeTo(null);
@@ -57,34 +58,42 @@ public class Admin extends javax.swing.JFrame {
                         if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                             delete_user();
                         }
-                        
+
                         return false;
                     }
                 });
     }
-    
+
     public void delete_user() {
         try {
             if (users.getSelectedRowCount() > 1 || users.getSelectedRowCount() == 0) {
+
                 alert_frame af = new alert_frame("Choose One user");
                 af.setVisible(true);
             } else {
+
                 int rownum = users.getSelectedRow();
+
                 // int id = Integer.parseInt(Userdata.getValueAt(rownum, 0).toString());
                 Data obj = new Data();
                 String query;
                 String name = users.getValueAt(rownum, obj.getColumnIndex(users, "Username")).toString();
+                if (name.equals("TMT") || name.equals("sheko")) {
+                    alert_frame alert = new alert_frame("Can't delete the main Admin");
+                    alert.setVisible(true);
+                    return;
+                }
                 query = "Delete from " + DatabaseConstants.user_Settings + " where username='" + name + "'";
                 conn.updata_query(query);
-                alert_frame alert = new alert_frame("Done Deleted");
-                alert.setVisible(true);
+                correct_frame c = new correct_frame("Done Deleted");
+                c.setVisible(true);
             }
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     public void display_data() {
         try {
             rs = conn.select_query(query);
@@ -126,7 +135,7 @@ public class Admin extends javax.swing.JFrame {
             public void editingCanceled(ChangeEvent e) {
                 //System.out.println("editingCanceled");
             }
-            
+
             public void editingStopped(ChangeEvent e) {
                 try {
                     if (users.getSelectedRowCount() == 1) {
@@ -324,7 +333,7 @@ public class Admin extends javax.swing.JFrame {
         gui.setSelected(false);
         refresh.setSelected(false);
         add.setSelected(false);
-        
+
     }
     private void addFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_addFocusGained
         // TODO add your handling code here
@@ -413,10 +422,14 @@ public class Admin extends javax.swing.JFrame {
                 Data obj = new Data();
                 String query;
                 String name = users.getValueAt(rownum, obj.getColumnIndex(users, "Username")).toString();
-                
+                if (name.equals("TMT") || name.equals("sheko")) {
+                    alert_frame af = new alert_frame("You can't delete the main admin");
+                    af.setVisible(true);
+                    return;
+                }
                 String block_n = users.getValueAt(rownum, obj.getColumnIndex(users, "Block")).toString();
                 if (!name.equals(Login.Uname)) {
-                    
+
                     if (block_n.equals("1")) {
                         query = "Update " + DatabaseConstants.user_Settings + " SET block = 0 where username ='" + name + "'";
                     } else {
@@ -428,7 +441,7 @@ public class Admin extends javax.swing.JFrame {
                     alert.setVisible(true);
                 }
             }
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
