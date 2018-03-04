@@ -24,6 +24,7 @@ public class DatabaseConstants {
     public static String cert_colm = "certificate";
     public static String user_Settings = "user_settings";
     public static String selectAll = "select * from lists";
+    
     public static int refresh_interval = 5;
     public static int DINNER_MODE = 0;
     public static int BACKUP_TIME = 10;
@@ -34,6 +35,7 @@ public class DatabaseConstants {
     public static String all_data = "select ID ,name,attendees,email,type,sponsor,mobile,Profession,Institution,country from lists";
     public static String select_name = "Select name from lists where id='";
     public static String update_2tables = "Update "+tableName+","+user_Settings+" Set "+tableName+".";
+    
     public static String clear_garapage_String(String garp) {
         if (garp == null) {
             return "";

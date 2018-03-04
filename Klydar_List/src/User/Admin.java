@@ -42,7 +42,7 @@ public class Admin extends javax.swing.JFrame {
      */
     Database conn;
     ResultSet rs;
-    String query = "Select * from " + DatabaseConstants.user_Settings + "";
+    String query = "Select `username`,`ip`,`block`,`type`, `no_attendees`, `no_tag`, `no_certificate`, `no_add`, `no_update` from " + DatabaseConstants.user_Settings + "";
     JTable users = new JTable();
 
     public Admin() {
@@ -147,13 +147,11 @@ public class Admin extends javax.swing.JFrame {
                         String column_name = users.getColumnName(users.getSelectedColumn());
                         //column_name=column_name.toLowerCase();
                         String data_updated = users.getValueAt(selected_row, users.getSelectedColumn()).toString();
-                        if (column_name.equals("Username")) {
-                            alert_frame af = new alert_frame("Update Not Avaliable");
-                            af.setVisible(true);
-                        } else {
+                        //clear ' , " from the string
+                            data_updated = DatabaseConstants.clear_garapage_String(data_updated);
                             db.updata_query("update user_settings set " + column_name + "='" + data_updated + "' where username = '" + id + "'");
                             db.updata_query(DatabaseConstants.update_user_Setting(DatabaseConstants.user_Settings, "no_update", "username"));
-                        }
+                        
                     }//if select one row
                     else {
                         alert_frame af = new alert_frame("Select One");
@@ -184,6 +182,7 @@ public class Admin extends javax.swing.JFrame {
 
         block = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
+        edit = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         add = new javax.swing.JMenu();
         gui = new javax.swing.JMenu();
@@ -204,6 +203,20 @@ public class Admin extends javax.swing.JFrame {
         block.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 blockActionPerformed(evt);
+            }
+        });
+
+        edit.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        edit.setForeground(new java.awt.Color(51, 51, 51));
+        edit.setText("Edit");
+        edit.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                editMouseMoved(evt);
+            }
+        });
+        edit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editActionPerformed(evt);
             }
         });
 
@@ -269,14 +282,14 @@ public class Admin extends javax.swing.JFrame {
         refresh.setForeground(new java.awt.Color(255, 255, 255));
         refresh.setText("Refresh");
         refresh.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        refresh.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                refreshMousePressed(evt);
-            }
-        });
         refresh.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 refreshMouseMoved(evt);
+            }
+        });
+        refresh.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                refreshMousePressed(evt);
             }
         });
         jMenuBar1.add(refresh);
@@ -308,7 +321,9 @@ public class Admin extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(852, Short.MAX_VALUE)
+                .addContainerGap(600, Short.MAX_VALUE)
+                .addComponent(edit, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(block, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
@@ -316,7 +331,9 @@ public class Admin extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(29, 29, 29)
-                .addComponent(block, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(block, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(edit, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
         );
@@ -447,6 +464,50 @@ public class Admin extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_blockActionPerformed
 
+    private void editMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editMouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editMouseMoved
+    public int getColumnIndex(JTable table, String header) {
+        try {
+            for (int i = 0; i < table.getColumnCount(); i++) {
+                if (table.getColumnName(i).equals(header)) {
+                    return i;
+                }
+            }
+            return -1;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Get ColumIndex -> " + e);
+        }
+        return -1;
+    }
+    private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
+        // TODO add your handling code here:
+        int row = users.getSelectedRow(), colum_index; // the first row selected
+        int rownum = users.getSelectedRowCount();//number of rows selected
+        String username;
+        if(users.getSelectedRowCount() == 1){
+            colum_index = getColumnIndex(users,"Username");
+            username = users.getValueAt(row,colum_index).toString();
+            EditUsers_Form edit_form = new EditUsers_Form(username);
+            edit_form.setVisible(true);
+        }
+        else if(rownum > 1){
+            colum_index = getColumnIndex(users,"Username");
+            int[] rows = users.getSelectedRows();
+            String[] usernames = new String[rownum];// number of users selected
+            //fill the array with all the usernames selected
+            for(int value=0;value<rownum; value++){
+                usernames[value] = users.getValueAt(rows[value],colum_index).toString();
+            }
+            EditUsers_Form edit_form = new EditUsers_Form(usernames);
+            edit_form.setVisible(true);
+        }
+        else{
+            alert_frame alert = new alert_frame("Select at least on user");
+            alert.setVisible(true);
+        }
+    }//GEN-LAST:event_editActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -454,6 +515,7 @@ public class Admin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu add;
     private javax.swing.JButton block;
+    private javax.swing.JButton edit;
     private javax.swing.JMenu gui;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;

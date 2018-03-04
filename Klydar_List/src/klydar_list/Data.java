@@ -316,6 +316,11 @@ public class Data extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Users Data");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(243, 243, 243));
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 20));
@@ -937,6 +942,7 @@ public class Data extends javax.swing.JFrame {
 
         try {
             int[] selected_rows = Userdata.getSelectedRows();
+            
             if (Userdata.getSelectedRowCount() >= 1) {
                 for (int sel = 0; sel < selected_rows.length; sel++) {
                     int rownum = selected_rows[sel];
@@ -1055,6 +1061,7 @@ public class Data extends javax.swing.JFrame {
 
     public void refresh_action() {
         try {
+            
             wait_thread.wf.setVisible(true);
             secondFilter.removeAllItems();
             filter.removeAllItems();
@@ -1076,6 +1083,8 @@ public class Data extends javax.swing.JFrame {
                 continue;
             wind.dispose();
         }
+        
+        
         st.on = false; // close the Server_Thread
         st.myserver.close_server();//this will interrupt the accept waiting and then will end the thread
     }
@@ -1083,6 +1092,9 @@ public class Data extends javax.swing.JFrame {
     public static void return_login(){
         try {
             close_frames();
+            //set the ip address of the user none when logout
+            
+            
             //ref_obj.on = false; // stop the thread
             Login obj = new Login();
             obj.setVisible(true);
@@ -1814,12 +1826,13 @@ public class Data extends javax.swing.JFrame {
         th_helper.start();
     }
     private void logoutMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMousePressed
-
+        //set the ip address of the user none when logout
+        VUpdate_Data("update "+DatabaseConstants.user_Settings+" set ip='none' where username='"+Login.Uname+"'");
         wait_thread.wf.setVisible(true);
         ref_obj.on = false; // stop the thread
 
         create_THhelper(); // create thread to call logout
-
+        
         //return_login();
     }//GEN-LAST:event_logoutMousePressed
 
@@ -1936,6 +1949,12 @@ public class Data extends javax.swing.JFrame {
         klydar_list.Data.jMenuBar1.setBackground(new Color(41,58,74));
     }//GEN-LAST:event_chatMousePressed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        
+        //set the ip address of the user none when logout
+        VUpdate_Data("update "+DatabaseConstants.user_Settings+" set ip='none' where username='"+Login.Uname+"'");
+    }//GEN-LAST:event_formWindowClosing
+
     public void clear_selection() {
         jMenu1.setSelected(false);
         refresh.setSelected(false);
@@ -2027,7 +2046,7 @@ public class Data extends javax.swing.JFrame {
 
     public void filter_sponsor(Set data) {
         try {
-
+            
             secondFilter.addItem("Show all");
             Enumeration e = Collections.enumeration(data);
             e.nextElement();
@@ -2048,7 +2067,7 @@ public class Data extends javax.swing.JFrame {
     }
 
     public void set_style() {
-
+        
         try {
             /**
              * ************************************************************************

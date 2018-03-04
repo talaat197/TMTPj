@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.sql.ResultSet;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import klydar_list.DatabaseConstants;
 import klydar_list.alert_frame;
 
 /**
@@ -141,6 +142,8 @@ public class scan_update_frame extends javax.swing.JFrame {
         try
         {
             String id = scan_code.getText();
+            //clear , " / from the id
+            id = DatabaseConstants.clear_garapage_String(id);
             ResultSet get_data = klydar_list.Data.db.select_query("select * from lists where id='"+id+"'");
             if(get_data.next())
             {
